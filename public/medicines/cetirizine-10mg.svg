@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Cetirizine 10mg pack">
+  <rect width="800" height="600" fill="#f8fafc"/>
+  <rect x="70" y="48" width="660" height="504" rx="18" fill="#ecf7ff" stroke="#3fa8d7" stroke-width="4"/>
+  <rect x="100" y="90" width="600" height="420" rx="14" fill="#ffffff" opacity="0.92"/>
+  <text x="400" y="160" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#1b7bb8" font-weight="700">CETIRIZINE</text>
+  <text x="400" y="220" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="62" fill="#1b7bb8" font-weight="900">10mg</text>
+  <text x="400" y="270" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#446e8a" font-weight="700">Non-Drowsy Allergy Relief</text>
+  <line x1="170" y1="300" x2="630" y2="300" stroke="#bfdff1" stroke-width="3"/>
+  <text x="400" y="345" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#2d5d78" font-weight="700">Runny nose, sneezing, itchy eyes &amp; hives</text>
+  <text x="400" y="387" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#2d5d78" font-weight="600">1 tablet once daily at bedtime</text>
+  <g>
+    <rect x="170" y="430" width="460" height="48" rx="24" fill="#4ea7dd"/>
+    <text x="400" y="462" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#ffffff" font-weight="800">STRIP OF 10 TABLETS</text>
+  </g>
+  <text x="220" y="545" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#1a6ca0" font-weight="700">DR. REDDY'S</text>
+  <text x="580" y="545" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#1a6ca0" font-weight="700">₹38</text>
+</svg>

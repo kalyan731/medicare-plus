@@ -16,7 +16,7 @@ export default function MedicineCard({ medicine }) {
     addToCart(medicine, 1)
   }
 
-  const defaultImg = "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&auto=format&fit=crop&q=80"
+  const defaultImg = "/medicines/paracetamol-500.jpg"
 
   return (
     <Link

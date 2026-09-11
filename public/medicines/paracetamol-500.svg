@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Paracetamol 500mg pack">
+  <rect width="800" height="600" fill="#f2f3f5"/>
+  <rect x="70" y="45" width="660" height="510" rx="18" fill="#f46a3a" stroke="#d8502f" stroke-width="4"/>
+  <rect x="96" y="88" width="608" height="440" rx="12" fill="#fff5f0" opacity="0.18" stroke="#fff" stroke-width="2"/>
+  <text x="400" y="150" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#fff" font-weight="700" letter-spacing="2">PARACETAMOL</text>
+  <text x="400" y="214" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="64" fill="#fff" font-weight="900">500mg</text>
+  <text x="400" y="255" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#ffe8dd" font-weight="600">Acetaminophen IP 500mg</text>
+  <line x1="150" y1="290" x2="650" y2="290" stroke="#ffd5c3" stroke-width="2"/>
+  <text x="400" y="335" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#fff" font-weight="700">PAIN RELIEVER / FEVER REDUCER</text>
+  <text x="400" y="375" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#fff5f1" font-weight="600">For headache, body ache, fever &amp; cold symptoms</text>
+  <text x="400" y="420" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#fff7f4" font-weight="700">1 tablet every 4-6 hours after meals</text>
+  <g>
+    <rect x="175" y="450" width="450" height="46" rx="23" fill="#fff" opacity="0.96"/>
+    <text x="400" y="480" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#d94c30" font-weight="800">STRIP OF 10 TABLETS</text>
+  </g>
+  <text x="220" y="545" font-size="16" font-family="Arial, Helvetica, sans-serif" fill="#fff6f4" font-weight="700">CIPLA HEALTH</text>
+  <text x="580" y="545" text-anchor="end" font-size="16" font-family="Arial, Helvetica, sans-serif" fill="#fff6f4" font-weight="700">₹45</text>
+</svg>

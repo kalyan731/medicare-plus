@@ -1,3 +1,16 @@
+const paracetamolImage = new URL('../../images/paracetamol-.jpeg', import.meta.url).href
+const doloImage = paracetamolImage
+const cetirizineImage = new URL('../../images/cetrizine.jpeg', import.meta.url).href
+const azithromycinImage = new URL('../../images/azithromycin.jpeg', import.meta.url).href
+const vitaminImage = new URL('../../images/vit c & zinc.jpg', import.meta.url).href
+const orsImage = new URL('../../images/ors.webp', import.meta.url).href
+const ibuprofenImage = new URL('../../images/ibuprofen.webp', import.meta.url).href
+const coughImage = new URL('../../images/cough.png', import.meta.url).href
+const antacidImage = new URL('../../images/antacid.jpg', import.meta.url).href
+const multivitaminImage = new URL('../../images/multivit.jpg', import.meta.url).href
+const omeprazoleImage = new URL('../../images/omeprazole.jpeg', import.meta.url).href
+const bandageImage = new URL('../../images/bandage.jpg', import.meta.url).href
+
 export const SAMPLE_MEDICINES = [
   {
     id: "med-1",
@@ -13,7 +26,7 @@ export const SAMPLE_MEDICINES = [
     dosage: "1 tablet every 4-6 hours after meals (Max 4g/day)",
     manufacturer: "Cipla Health Ltd.",
     uses: "Relief of mild-to-moderate fever, headache, migraine, muscle ache, backache, arthritis pain, and cold-associated fever.",
-    image_url: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&auto=format&fit=crop&q=80"
+    image_url: paracetamolImage
   },
   {
     id: "med-2",
@@ -29,7 +42,7 @@ export const SAMPLE_MEDICINES = [
     dosage: "1 tablet 3 times a day as prescribed by physician",
     manufacturer: "Micro Labs Ltd.",
     uses: "Management of acute fever, viral pyrexia, musculoskeletal pains, and headache.",
-    image_url: "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=800&auto=format&fit=crop&q=80"
+    image_url: doloImage
   },
   {
     id: "med-3",
@@ -45,7 +58,7 @@ export const SAMPLE_MEDICINES = [
     dosage: "1 tablet once daily at bedtime with water",
     manufacturer: "Dr. Reddy's Laboratories",
     uses: "Allergic rhinitis, seasonal allergies, hay fever, urticaria (hives), allergic conjunctivitis.",
-    image_url: "https://images.unsplash.com/photo-1585435557343-3b092031a831?w=800&auto=format&fit=crop&q=80"
+    image_url: cetirizineImage
   },
   {
     id: "med-4",
@@ -61,7 +74,7 @@ export const SAMPLE_MEDICINES = [
     dosage: "1 tablet daily 1 hour before or 2 hours after food for 3 to 5 days",
     manufacturer: "Sun Pharmaceutical Industries",
     uses: "Treatment of bacterial respiratory tract infections, pharyngitis, skin infections, and community-acquired pneumonia.",
-    image_url: "https://images.unsplash.com/photo-1584362917165-526a968579e8?w=800&auto=format&fit=crop&q=80"
+    image_url: azithromycinImage
   },
   {
     id: "med-5",
@@ -77,7 +90,7 @@ export const SAMPLE_MEDICINES = [
     dosage: "1 chewable tablet daily after lunch or breakfast",
     manufacturer: "Abbott Healthcare",
     uses: "Nutritional support, immune system enhancement, wound healing, and cellular protection.",
-    image_url: "https://images.unsplash.com/photo-1576602976047-174e57a47881?w=800&auto=format&fit=crop&q=80"
+    image_url: vitaminImage
   },
   {
     id: "med-6",
@@ -93,7 +106,7 @@ export const SAMPLE_MEDICINES = [
     dosage: "Dissolve entire contents of sachet in 1 Litre of clean drinking water",
     manufacturer: "FDC Limited",
     uses: "Rapid rehydration in acute diarrhea, vomiting, heat stroke, and intensive physical exertion.",
-    image_url: "https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=800&auto=format&fit=crop&q=80"
+    image_url: orsImage
   },
   {
     id: "med-7",
@@ -109,7 +122,7 @@ export const SAMPLE_MEDICINES = [
     dosage: "1 tablet with food or a glass of milk to prevent gastric irritation",
     manufacturer: "Piramal Healthcare",
     uses: "Inflammatory joint conditions, osteoarthritis, muscular pain, post-operative dental pain, headache.",
-    image_url: "https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=800&auto=format&fit=crop&q=80"
+    image_url: ibuprofenImage
   },
   {
     id: "med-8",
@@ -125,7 +138,7 @@ export const SAMPLE_MEDICINES = [
     dosage: "5-10ml up to 3 times a day as required",
     manufacturer: "Johnson & Johnson",
     uses: "Non-productive dry cough relief caused by throat tickle, allergens, and common cold.",
-    image_url: "https://images.unsplash.com/photo-1563178406-4cdc2923acbc?w=800&auto=format&fit=crop&q=80"
+    image_url: coughImage
   },
   {
     id: "med-9",
@@ -141,7 +154,7 @@ export const SAMPLE_MEDICINES = [
     dosage: "10ml - 15ml taken after meals or at onset of acidity",
     manufacturer: "Pfizer India Ltd.",
     uses: "Hyperacidity, heartburn, acid indigestion, gas bloating, sour stomach, and GERD symptoms.",
-    image_url: "https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=800&auto=format&fit=crop&q=80"
+    image_url: antacidImage
   },
   {
     id: "med-10",
@@ -157,7 +170,7 @@ export const SAMPLE_MEDICINES = [
     dosage: "1 softgel daily with water after breakfast",
     manufacturer: "Ranbaxy Laboratories",
     uses: "Daily nutritional support, physical endurance, mental alertness, immunity defense, and bone strength.",
-    image_url: "https://images.unsplash.com/photo-1559599101-f09722fb4948?w=800&auto=format&fit=crop&q=80"
+    image_url: multivitaminImage
   },
   {
     id: "med-11",
@@ -173,7 +186,7 @@ export const SAMPLE_MEDICINES = [
     dosage: "1 capsule once daily in the morning at least 30 minutes before breakfast",
     manufacturer: "Zydus Cadila Healthcare",
     uses: "Gastroesophageal reflux disease (GERD), heartburn prevention, gastric and duodenal ulcers.",
-    image_url: "https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=800&auto=format&fit=crop&q=80"
+    image_url: omeprazoleImage
   },
   {
     id: "med-12",
@@ -189,7 +202,7 @@ export const SAMPLE_MEDICINES = [
     dosage: "Clean the affected area thoroughly and apply ointment before dressing",
     manufacturer: "Dettol Health Solutions",
     uses: "First aid antiseptic management of minor cuts, abrasions, burns, and superficial skin wounds.",
-    image_url: "https://images.unsplash.com/photo-1603398938378-e54eab446dde?w=800&auto=format&fit=crop&q=80"
+    image_url: bandageImage
   }
 ]
 
