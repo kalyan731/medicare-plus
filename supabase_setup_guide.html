@@ -1,0 +1,990 @@
+<title>MediCare Plus Schema Setup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-raised: #f1f5f9;
+  --surface-overlay: rgba(255, 255, 255, 0.85);
+  --border: #e2e8f0;
+  --border-focus: #0d9488;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-subtle: #94a3b8;
+  --primary: #0d9488;
+  --primary-hover: #0f766e;
+  --primary-light: #f0fdfa;
+  --primary-ring: rgba(13, 148, 136, 0.2);
+  --accent-blue: #0284c7;
+  --accent-blue-light: #f0f9ff;
+  --success: #16a34a;
+  --success-light: #f0fdf4;
+  --code-bg: #0f172a;
+  --code-header: #1e293b;
+  --code-text: #e2e8f0;
+  --code-keyword: #38bdf8;
+  --code-string: #86efac;
+  --code-comment: #64748b;
+  --code-fn: #fbbf24;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #090d16;
+    --surface: #111827;
+    --surface-raised: #1f2937;
+    --surface-overlay: rgba(17, 24, 39, 0.85);
+    --border: #1f2937;
+    --border-focus: #14b8a6;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --text-subtle: #64748b;
+    --primary: #14b8a6;
+    --primary-hover: #2dd4bf;
+    --primary-light: rgba(20, 184, 166, 0.12);
+    --primary-ring: rgba(20, 184, 166, 0.25);
+    --accent-blue: #38bdf8;
+    --accent-blue-light: rgba(56, 189, 248, 0.12);
+    --success: #22c55e;
+    --success-light: rgba(34, 197, 94, 0.12);
+    --code-bg: #030712;
+    --code-header: #111827;
+    --code-text: #e2e8f0;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #090d16;
+  --surface: #111827;
+  --surface-raised: #1f2937;
+  --surface-overlay: rgba(17, 24, 39, 0.85);
+  --border: #1f2937;
+  --border-focus: #14b8a6;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+  --primary: #14b8a6;
+  --primary-hover: #2dd4bf;
+  --primary-light: rgba(20, 184, 166, 0.12);
+  --primary-ring: rgba(20, 184, 166, 0.25);
+  --accent-blue: #38bdf8;
+  --accent-blue-light: rgba(56, 189, 248, 0.12);
+  --success: #22c55e;
+  --success-light: rgba(34, 197, 94, 0.12);
+  --code-bg: #030712;
+  --code-header: #111827;
+  --code-text: #e2e8f0;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text-main);
+  line-height: 1.6;
+  padding-block: 40px;
+  padding-inline: clamp(16px, 5vw, 32px);
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 1040px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Header */
+.header-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.header-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--accent-blue));
+}
+
+.badge-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-teal {
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid var(--border-focus);
+}
+
+.badge-blue {
+  background: var(--accent-blue-light);
+  color: var(--accent-blue);
+  border: 1px solid var(--accent-blue);
+}
+
+.project-id-pill {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--surface-raised);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(24px, 4vw, 32px);
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.description {
+  font-size: 15px;
+  color: var(--text-muted);
+  max-width: 720px;
+}
+
+/* Alert Box */
+.alert-box {
+  background: var(--primary-light);
+  border: 1px solid var(--border-focus);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.alert-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--primary);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.alert-content h4 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.alert-content p {
+  font-size: 13.5px;
+  color: var(--text-muted);
+}
+
+.alert-content code {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--surface-raised);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--primary);
+}
+
+/* Step Cards */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.step-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.step-card:hover {
+  border-color: var(--border-focus);
+  transform: translateY(-2px);
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  flex-shrink: 0;
+}
+
+.step-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.step-body {
+  font-size: 14px;
+  color: var(--text-muted);
+  flex-grow: 1;
+}
+
+/* Action Buttons */
+.action-bar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(13, 148, 136, 0.25);
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text-main);
+  border-color: var(--border);
+}
+
+.btn-secondary:hover {
+  background: var(--surface-raised);
+  border-color: var(--text-subtle);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.btn-ghost:hover {
+  background: var(--surface-raised);
+  color: var(--text-main);
+}
+
+/* Schema Viewer Section */
+.schema-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.schema-toolbar {
+  padding: 16px 20px;
+  background: var(--surface-raised);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.schema-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.schema-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.table-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 12px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.tab-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  font-family: 'JetBrains Mono', monospace;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tab-btn:hover {
+  background: var(--surface-raised);
+  color: var(--text-main);
+}
+
+.tab-btn.active {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--border-focus);
+  font-weight: 600;
+}
+
+/* Code Display */
+.code-container {
+  background: var(--code-bg);
+  position: relative;
+  overflow: hidden;
+}
+
+pre {
+  margin: 0;
+  padding: 24px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--code-text);
+}
+
+/* Schema Summary Cards */
+.table-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  padding: 20px;
+  background: var(--surface-raised);
+  border-top: 1px solid var(--border);
+}
+
+.table-summary-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.table-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.table-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.table-badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 6px;
+  background: var(--surface-raised);
+  color: var(--text-subtle);
+  border-radius: 4px;
+  width: fit-content;
+  margin-top: 4px;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #0f172a;
+  color: #f8fafc;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+
+<div class="container">
+  <!-- Main Header -->
+  <header class="header-card">
+    <div class="badge-row">
+      <span class="badge badge-teal">MediCare Plus</span>
+      <span class="badge badge-blue">Database Setup</span>
+      <span class="project-id-pill">Project ID: dylmrhgpdgwwjddsmsdf</span>
+    </div>
+
+    <div>
+      <h1 class="title">Supabase Database Setup Guide</h1>
+      <p class="description">
+        Initialize your Supabase PostgreSQL database with authentication profiles, medicine catalogs, order management, and Row-Level Security (RLS) policies.
+      </p>
+    </div>
+
+    <!-- Alert / Diagnostic notice -->
+    <div class="alert-box">
+      <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <div class="alert-content">
+        <h4>Why are medicines not loading?</h4>
+        <p>
+          Your app reported <code>Could not find the table 'public.medicines' in the schema cache</code>. Running the SQL schema below in your Supabase project creates the tables and pre-seeds 12 medicine products.
+        </p>
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <button class="btn btn-primary" id="copyAllBtn" onclick="copyFullSchema()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        Copy Full SQL Schema
+      </button>
+
+      <a class="btn btn-secondary" href="https://supabase.com/dashboard/project/dylmrhgpdgwwjddsmsdf/sql/new" target="_blank" rel="noopener noreferrer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg>
+        Open Supabase SQL Editor
+      </a>
+
+      <a class="btn btn-ghost" href="http://localhost:5174/" target="_blank" rel="noopener noreferrer">
+        Open Local App (Port 5174)
+      </a>
+    </div>
+  </header>
+
+  <!-- 3-Step Walkthrough -->
+  <section class="steps-grid">
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">Open SQL Editor</div>
+      </div>
+      <div class="step-body">
+        Go to your Supabase project dashboard and click on <strong>SQL Editor</strong> in the left sidebar, or use the direct launch button above.
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">2</div>
+        <div class="step-title">Paste Schema & Run</div>
+      </div>
+      <div class="step-body">
+        Create a <strong>New Query</strong>, paste the copied SQL script into the editor pane, and click the green <strong>Run</strong> button.
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">3</div>
+        <div class="step-title">Refresh App</div>
+      </div>
+      <div class="step-body">
+        Head back to your browser tab running <strong>http://localhost:5174</strong> and refresh the page. The full medicine catalog will appear immediately.
+      </div>
+    </div>
+  </section>
+
+  <!-- SQL Schema Interactive Viewer -->
+  <section class="schema-section">
+    <div class="schema-toolbar">
+      <div class="schema-title-group">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 7V4h16v3M9 20h6M12 4v16"/>
+        </svg>
+        <span class="schema-title">Schema Inspector</span>
+      </div>
+      <button class="btn btn-secondary" onclick="copyCurrentTab()" style="padding: 6px 12px; font-size: 13px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        Copy Section
+      </button>
+    </div>
+
+    <div class="table-tabs">
+      <button class="tab-btn active" onclick="showTab('all', this)">All SQL (Full File)</button>
+      <button class="tab-btn" onclick="showTab('profiles', this)">profiles</button>
+      <button class="tab-btn" onclick="showTab('medicines', this)">medicines</button>
+      <button class="tab-btn" onclick="showTab('orders', this)">orders</button>
+      <button class="tab-btn" onclick="showTab('order_items', this)">order_items</button>
+      <button class="tab-btn" onclick="showTab('rls', this)">RLS Policies</button>
+      <button class="tab-btn" onclick="showTab('triggers', this)">Auth Trigger</button>
+      <button class="tab-btn" onclick="showTab('seeds', this)">Sample Data (12)</button>
+    </div>
+
+    <div class="code-container">
+      <pre><code id="sqlCodeBlock"></code></pre>
+    </div>
+
+    <div class="table-details-grid">
+      <div class="table-summary-card">
+        <span class="table-name">public.profiles</span>
+        <span class="table-desc">User accounts linked to auth.users with phone & name.</span>
+        <span class="table-badge">RLS: Owner Only</span>
+      </div>
+      <div class="table-summary-card">
+        <span class="table-name">public.medicines</span>
+        <span class="table-desc">Product catalog with prices, stock, dosage, images.</span>
+        <span class="table-badge">RLS: Public Read</span>
+      </div>
+      <div class="table-summary-card">
+        <span class="table-name">public.orders</span>
+        <span class="table-desc">User checkout records and delivery destinations.</span>
+        <span class="table-badge">RLS: Owner Only</span>
+      </div>
+      <div class="table-summary-card">
+        <span class="table-name">public.order_items</span>
+        <span class="table-desc">Items, quantities, and line totals for each order.</span>
+        <span class="table-badge">RLS: Owner Only</span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Toast notification -->
+<div id="toast" class="toast">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 6L9 17l-5-5"/>
+  </svg>
+  <span id="toastMsg">Copied SQL to clipboard!</span>
+</div>
+
+<script>
+const SQL_DATA = {
+  all: `-- ===================================================
+-- MediCare Plus Pharmacy - Supabase Database Schema
+-- Run this SQL in your Supabase SQL Editor
+-- ===================================================
+
+-- 1. Enable UUID Extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- 2. Create PROFILES Table
+CREATE TABLE IF NOT EXISTS public.profiles (
+    id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
+    full_name TEXT,
+    email TEXT,
+    phone TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 3. Create MEDICINES Table
+CREATE TABLE IF NOT EXISTS public.medicines (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT,
+    price DECIMAL(10, 2) NOT NULL,
+    category TEXT NOT NULL,
+    stock INTEGER DEFAULT 100 NOT NULL,
+    image_url TEXT,
+    dosage TEXT,
+    manufacturer TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 4. Create ORDERS Table
+CREATE TABLE IF NOT EXISTS public.orders (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+    delivery_name TEXT NOT NULL,
+    delivery_phone TEXT NOT NULL,
+    delivery_address TEXT NOT NULL,
+    delivery_city TEXT NOT NULL,
+    delivery_pincode TEXT NOT NULL,
+    total_amount DECIMAL(10, 2) NOT NULL,
+    payment_method TEXT DEFAULT 'Cash on Delivery' NOT NULL,
+    status TEXT DEFAULT 'Placed' NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 5. Create ORDER_ITEMS Table
+CREATE TABLE IF NOT EXISTS public.order_items (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    order_id UUID REFERENCES public.orders(id) ON DELETE CASCADE NOT NULL,
+    medicine_id UUID REFERENCES public.medicines(id) ON DELETE SET NULL,
+    medicine_name TEXT NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    quantity INTEGER NOT NULL,
+    subtotal DECIMAL(10, 2) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- ===================================================
+-- 6. ROW LEVEL SECURITY (RLS) POLICIES
+-- ===================================================
+
+-- Enable RLS on all tables
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.medicines ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.order_items ENABLE ROW LEVEL SECURITY;
+
+-- MEDICINES Policies (Public read for all users)
+CREATE POLICY "Medicines are viewable by everyone"
+ON public.medicines FOR SELECT
+USING (true);
+
+-- PROFILES Policies (Users can only view and edit their own profile)
+CREATE POLICY "Users can view their own profile"
+ON public.profiles FOR SELECT
+USING (auth.uid() = id);
+
+CREATE POLICY "Users can update their own profile"
+ON public.profiles FOR UPDATE
+USING (auth.uid() = id);
+
+CREATE POLICY "Users can insert their own profile"
+ON public.profiles FOR INSERT
+WITH CHECK (auth.uid() = id);
+
+-- ORDERS Policies (Users can only view and create their own orders)
+CREATE POLICY "Users can view their own orders"
+ON public.orders FOR SELECT
+USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own orders"
+ON public.orders FOR INSERT
+WITH CHECK (auth.uid() = user_id);
+
+-- ORDER_ITEMS Policies (Users can view and insert items for their own orders)
+CREATE POLICY "Users can view their own order items"
+ON public.order_items FOR SELECT
+USING (
+    EXISTS (
+        SELECT 1 FROM public.orders
+        WHERE orders.id = order_items.order_id
+        AND orders.user_id = auth.uid()
+    )
+);
+
+CREATE POLICY "Users can insert order items for their own orders"
+ON public.order_items FOR INSERT
+WITH CHECK (
+    EXISTS (
+        SELECT 1 FROM public.orders
+        WHERE orders.id = order_items.order_id
+        AND orders.user_id = auth.uid()
+    )
+);
+
+-- ===================================================
+-- 7. AUTOMATIC USER PROFILE CREATION TRIGGER
+-- ===================================================
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO public.profiles (id, full_name, email, phone)
+    VALUES (
+        new.id,
+        COALESCE(new.raw_user_meta_data->>'full_name', ''),
+        new.email,
+        COALESCE(new.raw_user_meta_data->>'phone', '')
+    );
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Trigger the profile creation on signup
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- ===================================================
+-- 8. SAMPLE MEDICINE SEED DATA
+-- ===================================================
+INSERT INTO public.medicines (name, description, price, category, stock, dosage, manufacturer, image_url) VALUES
+('Paracetamol 500mg', 'Effective relief from mild to moderate fever, headaches, body ache, and common pain.', 35.00, 'Pain & Fever', 120, '1 tablet every 4-6 hours', 'Cipla Health', 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60'),
+('Dolo 650 Tablet', 'Fast-acting antipyretic and analgesic for acute fever, viral infection body aches.', 42.00, 'Pain & Fever', 150, '1 tablet 3 times a day as prescribed', 'Micro Labs', 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=500&auto=format&fit=crop&q=60'),
+('Cetirizine 10mg', 'Non-drowsy antihistamine for allergic rhinitis, runny nose, sneezing, and skin hives.', 28.50, 'Allergy & Cold', 95, '1 tablet daily at bedtime', 'Dr. Reddy Labs', 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=500&auto=format&fit=crop&q=60'),
+('Azithromycin 500mg', 'Broad-spectrum antibiotic for respiratory tract, ear, and bacterial infections.', 125.00, 'Antibiotics', 60, '1 tablet daily for 3 to 5 days', 'Sun Pharma', 'https://images.unsplash.com/photo-1576602976047-174e57a47881?w=500&auto=format&fit=crop&q=60'),
+('Vitamin C + Zinc Chewable', 'Immunity booster with antioxidant properties to fight oxidative stress and fatigue.', 85.00, 'Vitamins & Supplements', 200, '1 chewable tablet daily after meals', 'Abbott Healthcare', 'https://images.unsplash.com/photo-1550572017-ed24058d867c?w=500&auto=format&fit=crop&q=60'),
+('ORS Electrolyte Sachet (21.8g)', 'WHO-recommended oral rehydration salts for rapid recovery from dehydration.', 22.00, 'Digestive & Stomach Care', 250, 'Mix 1 sachet in 1 Litre of clean water', 'FDC Limited', 'https://images.unsplash.com/photo-1585435557343-3b092031a831?w=500&auto=format&fit=crop&q=60'),
+('Ibuprofen 400mg', 'Non-steroidal anti-inflammatory drug (NSAID) for muscle pain, arthritis, and swelling.', 48.00, 'Pain & Fever', 80, '1 tablet with food or milk', 'Piramal Healthcare', 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=500&auto=format&fit=crop&q=60'),
+('Cough Syrup (Benadryl DR)', 'Soothing dry cough syrup with antitussive action for quick throat relief.', 95.00, 'Allergy & Cold', 75, '10ml (2 teaspoonfuls) 3 times a day', 'Johnson & Johnson', 'https://images.unsplash.com/photo-1563178406-4cdc2923acbc?w=500&auto=format&fit=crop&q=60'),
+('Antacid Liquid Gel 200ml', 'Instant cooling relief from acidity, heartburn, gas, and indigestion.', 110.00, 'Digestive & Stomach Care', 110, '10ml after meals as required', 'Pfizer India', 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=500&auto=format&fit=crop&q=60'),
+('Multivitamin & Minerals Capsules', 'Comprehensive daily dietary supplement for energy, stamina, and overall vitality.', 199.00, 'Vitamins & Supplements', 90, '1 capsule daily with water', 'Ranbaxy Labs', 'https://images.unsplash.com/photo-1550572017-ed24058d867c?w=500&auto=format&fit=crop&q=60'),
+('Omeprazole 20mg', 'Proton pump inhibitor for acid reflux, GERD, and gastric ulcer protection.', 55.00, 'Digestive & Stomach Care', 130, '1 capsule empty stomach in morning', 'Zydus Cadila', 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=500&auto=format&fit=crop&q=60'),
+('Bandage & Antiseptic Ointment Kit', 'First aid essential antiseptic kit for cuts, burns, scrapes, and minor wounds.', 75.00, 'First Aid & Wellness', 65, 'Apply topically on cleaned wound', 'Dettol Health', 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60');`,
+
+  profiles: `-- 2. Create PROFILES Table
+CREATE TABLE IF NOT EXISTS public.profiles (
+    id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
+    full_name TEXT,
+    email TEXT,
+    phone TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);`,
+
+  medicines: `-- 3. Create MEDICINES Table
+CREATE TABLE IF NOT EXISTS public.medicines (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT,
+    price DECIMAL(10, 2) NOT NULL,
+    category TEXT NOT NULL,
+    stock INTEGER DEFAULT 100 NOT NULL,
+    image_url TEXT,
+    dosage TEXT,
+    manufacturer TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);`,
+
+  orders: `-- 4. Create ORDERS Table
+CREATE TABLE IF NOT EXISTS public.orders (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+    delivery_name TEXT NOT NULL,
+    delivery_phone TEXT NOT NULL,
+    delivery_address TEXT NOT NULL,
+    delivery_city TEXT NOT NULL,
+    delivery_pincode TEXT NOT NULL,
+    total_amount DECIMAL(10, 2) NOT NULL,
+    payment_method TEXT DEFAULT 'Cash on Delivery' NOT NULL,
+    status TEXT DEFAULT 'Placed' NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);`,
+
+  order_items: `-- 5. Create ORDER_ITEMS Table
+CREATE TABLE IF NOT EXISTS public.order_items (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    order_id UUID REFERENCES public.orders(id) ON DELETE CASCADE NOT NULL,
+    medicine_id UUID REFERENCES public.medicines(id) ON DELETE SET NULL,
+    medicine_name TEXT NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    quantity INTEGER NOT NULL,
+    subtotal DECIMAL(10, 2) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);`,
+
+  rls: `-- 6. ROW LEVEL SECURITY (RLS) POLICIES
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.medicines ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.order_items ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Medicines are viewable by everyone"
+ON public.medicines FOR SELECT USING (true);
+
+CREATE POLICY "Users can view their own profile"
+ON public.profiles FOR SELECT USING (auth.uid() = id);
+
+CREATE POLICY "Users can update their own profile"
+ON public.profiles FOR UPDATE USING (auth.uid() = id);
+
+CREATE POLICY "Users can insert their own profile"
+ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
+
+CREATE POLICY "Users can view their own orders"
+ON public.orders FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own orders"
+ON public.orders FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can view their own order items"
+ON public.order_items FOR SELECT
+USING (
+    EXISTS (
+        SELECT 1 FROM public.orders
+        WHERE orders.id = order_items.order_id
+        AND orders.user_id = auth.uid()
+    )
+);
+
+CREATE POLICY "Users can insert order items for their own orders"
+ON public.order_items FOR INSERT
+WITH CHECK (
+    EXISTS (
+        SELECT 1 FROM public.orders
+        WHERE orders.id = order_items.order_id
+        AND orders.user_id = auth.uid()
+    )
+);`,
+
+  triggers: `-- 7. AUTOMATIC USER PROFILE CREATION TRIGGER
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO public.profiles (id, full_name, email, phone)
+    VALUES (
+        new.id,
+        COALESCE(new.raw_user_meta_data->>'full_name', ''),
+        new.email,
+        COALESCE(new.raw_user_meta_data->>'phone', '')
+    );
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();`,
+
+  seeds: `-- 8. SAMPLE MEDICINE SEED DATA (12 PRODUCTS)
+INSERT INTO public.medicines (name, description, price, category, stock, dosage, manufacturer, image_url) VALUES
+('Paracetamol 500mg', 'Effective relief from mild to moderate fever, headaches, body ache, and common pain.', 35.00, 'Pain & Fever', 120, '1 tablet every 4-6 hours', 'Cipla Health', 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60'),
+('Dolo 650 Tablet', 'Fast-acting antipyretic and analgesic for acute fever, viral infection body aches.', 42.00, 'Pain & Fever', 150, '1 tablet 3 times a day as prescribed', 'Micro Labs', 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=500&auto=format&fit=crop&q=60'),
+('Cetirizine 10mg', 'Non-drowsy antihistamine for allergic rhinitis, runny nose, sneezing, and skin hives.', 28.50, 'Allergy & Cold', 95, '1 tablet daily at bedtime', 'Dr. Reddy Labs', 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=500&auto=format&fit=crop&q=60'),
+('Azithromycin 500mg', 'Broad-spectrum antibiotic for respiratory tract, ear, and bacterial infections.', 125.00, 'Antibiotics', 60, '1 tablet daily for 3 to 5 days', 'Sun Pharma', 'https://images.unsplash.com/photo-1576602976047-174e57a47881?w=500&auto=format&fit=crop&q=60'),
+('Vitamin C + Zinc Chewable', 'Immunity booster with antioxidant properties to fight oxidative stress and fatigue.', 85.00, 'Vitamins & Supplements', 200, '1 chewable tablet daily after meals', 'Abbott Healthcare', 'https://images.unsplash.com/photo-1550572017-ed24058d867c?w=500&auto=format&fit=crop&q=60'),
+('ORS Electrolyte Sachet (21.8g)', 'WHO-recommended oral rehydration salts for rapid recovery from dehydration.', 22.00, 'Digestive & Stomach Care', 250, 'Mix 1 sachet in 1 Litre of clean water', 'FDC Limited', 'https://images.unsplash.com/photo-1585435557343-3b092031a831?w=500&auto=format&fit=crop&q=60'),
+('Ibuprofen 400mg', 'Non-steroidal anti-inflammatory drug (NSAID) for muscle pain, arthritis, and swelling.', 48.00, 'Pain & Fever', 80, '1 tablet with food or milk', 'Piramal Healthcare', 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=500&auto=format&fit=crop&q=60'),
+('Cough Syrup (Benadryl DR)', 'Soothing dry cough syrup with antitussive action for quick throat relief.', 95.00, 'Allergy & Cold', 75, '10ml (2 teaspoonfuls) 3 times a day', 'Johnson & Johnson', 'https://images.unsplash.com/photo-1563178406-4cdc2923acbc?w=500&auto=format&fit=crop&q=60'),
+('Antacid Liquid Gel 200ml', 'Instant cooling relief from acidity, heartburn, gas, and indigestion.', 110.00, 'Digestive & Stomach Care', 110, '10ml after meals as required', 'Pfizer India', 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=500&auto=format&fit=crop&q=60'),
+('Multivitamin & Minerals Capsules', 'Comprehensive daily dietary supplement for energy, stamina, and overall vitality.', 199.00, 'Vitamins & Supplements', 90, '1 capsule daily with water', 'Ranbaxy Labs', 'https://images.unsplash.com/photo-1550572017-ed24058d867c?w=500&auto=format&fit=crop&q=60'),
+('Omeprazole 20mg', 'Proton pump inhibitor for acid reflux, GERD, and gastric ulcer protection.', 55.00, 'Digestive & Stomach Care', 130, '1 capsule empty stomach in morning', 'Zydus Cadila', 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=500&auto=format&fit=crop&q=60'),
+('Bandage & Antiseptic Ointment Kit', 'First aid essential antiseptic kit for cuts, burns, scrapes, and minor wounds.', 75.00, 'First Aid & Wellness', 65, 'Apply topically on cleaned wound', 'Dettol Health', 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60');`
+};
+
+let currentTabKey = 'all';
+
+function renderSQL(key) {
+  currentTabKey = key;
+  const block = document.getElementById('sqlCodeBlock');
+  block.textContent = SQL_DATA[key] || SQL_DATA.all;
+}
+
+function showTab(key, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSQL(key);
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  const toastMsg = document.getElementById('toastMsg');
+  toastMsg.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+function copyFullSchema() {
+  navigator.clipboard.writeText(SQL_DATA.all).then(() => {
+    showToast('Full schema copied to clipboard!');
+  }).catch(() => {
+    showToast('Failed to copy');
+  });
+}
+
+function copyCurrentTab() {
+  const text = SQL_DATA[currentTabKey] || SQL_DATA.all;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast(`Copied ${currentTabKey} section!`);
+  }).catch(() => {
+    showToast('Failed to copy');
+  });
+}
+
+// Initial render
+renderSQL('all');
+</script>
