@@ -29,7 +29,20 @@ export default function MedicineDetails() {
   const [imgError, setImgError] = useState(false)
 
   useEffect(() => {
+    setImgError(false)
+  }, [medicine?.image_url])
+
+  useEffect(() => {
     loadMedicineDetails()
+
+    if (!isSupabaseConfigured || !supabase) return undefined
+
+    const channel = supabase
+      .channel(`medicine-details-${id}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'medicines', filter: `id=eq.${id}` }, loadMedicineDetails)
+      .subscribe()
+
+    return () => supabase.removeChannel(channel)
   }, [id])
 
   const loadMedicineDetails = async () => {
@@ -242,11 +255,10 @@ export default function MedicineDetails() {
                   <button
                     onClick={handleAddToCart}
                     disabled={medicine.stock === 0}
-                    className={`flex-1 flex items-center justify-center space-x-2 py-4 px-6 rounded-xl font-semibold shadow-md transition-all ${
-                      medicine.stock === 0
+                    className={`flex-1 flex items-center justify-center space-x-2 py-4 px-6 rounded-xl font-semibold shadow-md transition-all ${medicine.stock === 0
                         ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                         : 'bg-pharmacy-600 text-white hover:bg-pharmacy-700 hover:shadow-lg hover:shadow-pharmacy-600/30 active:scale-98'
-                    }`}
+                      }`}
                   >
                     <ShoppingCart className="w-5 h-5" />
                     <span>{medicine.stock === 0 ? 'Out of Stock' : 'Add to Cart'}</span>
@@ -301,11 +313,10 @@ export default function MedicineDetails() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`py-4 px-6 text-sm font-semibold whitespace-nowrap transition-colors border-b-2 ${
-                  activeTab === tab.id
+                className={`py-4 px-6 text-sm font-semibold whitespace-nowrap transition-colors border-b-2 ${activeTab === tab.id
                     ? 'border-pharmacy-600 text-pharmacy-700 bg-pharmacy-50/40'
                     : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                }`}
+                  }`}
               >
                 {tab.label}
               </button>

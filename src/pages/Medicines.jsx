@@ -1,23 +1,53 @@
-
-
-
 import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { Search, Filter, X } from 'lucide-react'
 import { supabase, isSupabaseConfigured } from '../lib/supabase'
 import { SAMPLE_MEDICINES, enrichMedicines } from '../lib/demoData'
 import MedicineCard from '../components/MedicineCard'
 import Loading from '../components/Loading'
 
+const DEFAULT_CATEGORIES = [
+  'All',
+  'Pain & Fever',
+  'Allergy & Cold',
+  'Antibiotics',
+  'Digestive & Stomach Care',
+  'Vitamins & Supplements',
+  'First Aid & Antiseptics'
+]
+
 export default function Medicines() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const [medicines, setMedicines] = useState([])
   const [filteredMedicines, setFilteredMedicines] = useState([])
   const [loading, setLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('All')
-  const [categories, setCategories] = useState([])
+  const [categories, setCategories] = useState(DEFAULT_CATEGORIES)
+
+  const categoryParam = searchParams.get('category') || 'All'
+  const searchParam = searchParams.get('search') || ''
+
+  const [searchQuery, setSearchQuery] = useState(searchParam)
+  const [selectedCategory, setSelectedCategory] = useState(categoryParam)
+
+  // Sync state when URL params change (e.g. from footer link click or browser back/forward)
+  useEffect(() => {
+    const currentCategory = searchParams.get('category') || 'All'
+    const currentSearch = searchParams.get('search') || ''
+    setSelectedCategory(currentCategory)
+    setSearchQuery(currentSearch)
+  }, [searchParams])
 
   useEffect(() => {
     loadMedicines()
+
+    if (!isSupabaseConfigured || !supabase) return undefined
+
+    const channel = supabase
+      .channel('medicines-list')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'medicines' }, loadMedicines)
+      .subscribe()
+
+    return () => supabase.removeChannel(channel)
   }, [])
 
   useEffect(() => {
@@ -55,7 +85,7 @@ export default function Medicines() {
   }
 
   const extractCategories = (medicineList) => {
-    const uniqueCategories = [...new Set(medicineList.map((m) => m.category))]
+    const uniqueCategories = [...new Set(medicineList.map((m) => m.category).filter(Boolean))]
     setCategories(['All', ...uniqueCategories])
   }
 
@@ -82,9 +112,32 @@ export default function Medicines() {
     setFilteredMedicines(filtered)
   }
 
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category)
+    const newParams = new URLSearchParams(searchParams)
+    if (category === 'All') {
+      newParams.delete('category')
+    } else {
+      newParams.set('category', category)
+    }
+    setSearchParams(newParams)
+  }
+
+  const handleSearchChange = (value) => {
+    setSearchQuery(value)
+    const newParams = new URLSearchParams(searchParams)
+    if (!value.trim()) {
+      newParams.delete('search')
+    } else {
+      newParams.set('search', value)
+    }
+    setSearchParams(newParams)
+  }
+
   const handleClearFilters = () => {
     setSearchQuery('')
     setSelectedCategory('All')
+    setSearchParams({})
   }
 
   return (
@@ -112,12 +165,14 @@ export default function Medicines() {
                 type="text"
                 placeholder="Search medicines by name, generic composition, category..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => handleSearchChange(e.target.value)}
                 className="w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pharmacy-500 focus:border-transparent outline-none text-gray-900 placeholder-gray-400"
               />
               {searchQuery && (
                 <button
-                  onClick={() => setSearchQuery('')}
+                  type="button"
+                  onClick={() => handleSearchChange('')}
+                  aria-label="Clear search"
                   className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-full transition-colors"
                 >
                   <X className="w-4 h-4 text-gray-500" />
@@ -136,7 +191,8 @@ export default function Medicines() {
                 {categories.map((category) => (
                   <button
                     key={category}
-                    onClick={() => setSelectedCategory(category)}
+                    type="button"
+                    onClick={() => handleCategorySelect(category)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                       selectedCategory === category
                         ? 'bg-pharmacy-600 text-white shadow-md shadow-pharmacy-600/30'
@@ -156,6 +212,7 @@ export default function Medicines() {
                   Showing <span className="font-semibold text-pharmacy-700">{filteredMedicines.length}</span> result{filteredMedicines.length !== 1 ? 's' : ''}
                 </p>
                 <button
+                  type="button"
                   onClick={handleClearFilters}
                   className="flex items-center space-x-1.5 px-3 py-1.5 text-sm text-gray-600 hover:text-pharmacy-600 hover:bg-pharmacy-50 rounded-lg transition-colors"
                 >
@@ -189,11 +246,11 @@ export default function Medicines() {
             </p>
             {(searchQuery || selectedCategory !== 'All') && (
               <button
+                type="button"
                 onClick={handleClearFilters}
-                className="inline-flex items-center space-x-2 px-6 py-3 bg-pharmacy-600 text-white font-medium rounded-xl hover:bg-pharmacy-700 transition-colors"
+                className="px-6 py-2.5 bg-pharmacy-600 text-white font-medium rounded-xl hover:bg-pharmacy-700 transition-colors"
               >
-                <X className="w-4 h-4" />
-                <span>Clear all filters</span>
+                Clear all filters
               </button>
             )}
           </div>

@@ -92,7 +92,7 @@ export default function Cart() {
                     {item.name}
                   </h3>
                   <p className="text-xs text-gray-400 mt-0.5">
-                    Price per unit: ₹{parseFloat(item.price).toFixed(2)}
+                    Price per unit: ₹{Number.parseFloat(item.price).toFixed(2)}
                   </p>
                 </div>
 
@@ -120,7 +120,7 @@ export default function Cart() {
                 {/* Subtotal & Remove */}
                 <div className="flex items-center sm:flex-col justify-between sm:justify-center sm:items-end gap-2 w-full sm:w-auto">
                   <span className="text-base font-bold text-gray-900">
-                    ₹{(parseFloat(item.price) * item.quantity).toFixed(2)}
+                    ₹{(Number.parseFloat(item.price) * item.quantity).toFixed(2)}
                   </span>
                   <button
                     onClick={() => removeFromCart(item.id)}

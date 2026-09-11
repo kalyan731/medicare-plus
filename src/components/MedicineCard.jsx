@@ -1,11 +1,15 @@
 import { ShoppingCart, Eye, Package } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 
 export default function MedicineCard({ medicine }) {
   const { addToCart } = useCart()
   const [imgError, setImgError] = useState(false)
+
+  useEffect(() => {
+    setImgError(false)
+  }, [medicine.image_url])
 
   const handleAddToCart = (e) => {
     e.preventDefault()
@@ -117,11 +121,10 @@ export default function MedicineCard({ medicine }) {
           <button
             onClick={handleAddToCart}
             disabled={medicine.stock === 0}
-            className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-sm font-medium transition-all shadow-sm ${
-              medicine.stock === 0
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                : 'bg-pharmacy-600 text-white hover:bg-pharmacy-700 hover:shadow-md hover:shadow-pharmacy-600/30 active:scale-95'
-            }`}
+            className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-sm font-medium transition-all shadow-sm ${medicine.stock === 0
+              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              : 'bg-pharmacy-600 text-white hover:bg-pharmacy-700 hover:shadow-md hover:shadow-pharmacy-600/30 active:scale-95'
+              }`}
             title={medicine.stock === 0 ? 'Out of stock' : 'Add to cart'}
           >
             <ShoppingCart className="w-4 h-4" />

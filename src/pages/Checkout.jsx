@@ -97,7 +97,7 @@ export default function Checkout() {
         .single()
 
       // Fallback check if table uses user_id instead of appwrite_user_id
-      if (orderError && orderError.code === '42703') {
+      if (orderError?.code === '42703') {
         const fallback = await supabase
           .from('orders')
           .insert([
@@ -126,9 +126,9 @@ export default function Checkout() {
         order_id: orderData.id,
         medicine_id: item.id,
         medicine_name: item.name,
-        price: parseFloat(item.price),
+        price: Number.parseFloat(item.price),
         quantity: item.quantity,
-        subtotal: parseFloat(item.price) * item.quantity,
+        subtotal: Number.parseFloat(item.price) * item.quantity,
       }))
 
       const { error: itemsError } = await supabase
@@ -217,12 +217,13 @@ export default function Checkout() {
 
                   {/* Full Name */}
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                    <label htmlFor="deliveryName" className="block text-sm font-semibold text-gray-700 mb-1.5">
                       Full Name
                     </label>
                     <div className="relative">
                       <User className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
                       <input
+                        id="deliveryName"
                         type="text"
                         name="deliveryName"
                         required
@@ -236,12 +237,13 @@ export default function Checkout() {
 
                   {/* Phone */}
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                    <label htmlFor="deliveryPhone" className="block text-sm font-semibold text-gray-700 mb-1.5">
                       Phone Number
                     </label>
                     <div className="relative">
                       <Phone className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
                       <input
+                        id="deliveryPhone"
                         type="tel"
                         name="deliveryPhone"
                         required
@@ -255,12 +257,13 @@ export default function Checkout() {
 
                   {/* Address */}
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                    <label htmlFor="deliveryAddress" className="block text-sm font-semibold text-gray-700 mb-1.5">
                       Delivery Address
                     </label>
                     <div className="relative">
                       <Home className="w-5 h-5 text-gray-400 absolute left-4 top-4" />
                       <textarea
+                        id="deliveryAddress"
                         name="deliveryAddress"
                         required
                         value={formData.deliveryAddress}
@@ -274,10 +277,11 @@ export default function Checkout() {
 
                   {/* City */}
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                    <label htmlFor="deliveryCity" className="block text-sm font-semibold text-gray-700 mb-1.5">
                       City
                     </label>
                     <input
+                      id="deliveryCity"
                       type="text"
                       name="deliveryCity"
                       required
@@ -290,10 +294,11 @@ export default function Checkout() {
 
                   {/* Pincode */}
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                    <label htmlFor="deliveryPincode" className="block text-sm font-semibold text-gray-700 mb-1.5">
                       Pincode
                     </label>
                     <input
+                      id="deliveryPincode"
                       type="text"
                       name="deliveryPincode"
                       required
@@ -345,16 +350,16 @@ export default function Checkout() {
                       <img
                         src={item.image_url}
                         alt={item.name}
-                        className="w-12 h-12 rounded-lg object-cover bg-gray-50"
+                        className="w-12 h-12 rounded-lg object-cover bg-gray-50 shrink-0"
                       />
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-gray-900 truncate">{item.name}</p>
                         <p className="text-xs text-gray-500">
-                          ₹{parseFloat(item.price).toFixed(2)} × {item.quantity}
+                          ₹{Number.parseFloat(item.price).toFixed(2)} × {item.quantity}
                         </p>
                       </div>
                       <span className="font-semibold text-gray-900 text-sm">
-                        ₹{(parseFloat(item.price) * item.quantity).toFixed(2)}
+                        ₹{(Number.parseFloat(item.price) * item.quantity).toFixed(2)}
                       </span>
                     </div>
                   ))}

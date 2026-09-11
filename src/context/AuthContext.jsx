@@ -1,4 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
+import { ID } from 'appwrite'
+import { appwriteAccount, isAppwriteConfigured } from '../lib/appwrite'
 import { supabase, isSupabaseConfigured } from '../lib/supabase'
 
 const AuthContext = createContext({})
@@ -17,32 +19,24 @@ export const AuthProvider = ({ children }) => {
   const [profile, setProfile] = useState(null)
 
   useEffect(() => {
-    if (!isSupabaseConfigured) {
+    if (!isAppwriteConfigured) {
       setLoading(false)
       return
     }
 
-    const loadSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      await setSessionUser(session?.user || null)
-      setLoading(false)
-    }
-
-    loadSession()
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSessionUser(session?.user || null)
-    })
-
-    return () => subscription.unsubscribe()
+    checkSession()
   }, [])
 
-  const setSessionUser = async (currentUser) => {
-    setUser(currentUser)
-    if (currentUser) {
-      await loadProfile(currentUser.id)
-    } else {
+  const checkSession = async () => {
+    try {
+      const currentUser = await appwriteAccount.get()
+      setUser(currentUser)
+      await loadProfile(currentUser.$id)
+    } catch {
+      setUser(null)
       setProfile(null)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -62,7 +56,7 @@ export const AuthProvider = ({ children }) => {
         const fallback = await supabase
           .from('profiles')
           .select('*')
-          .eq('id', appwriteUserId)
+          .eq('id', userId)
           .maybeSingle()
         data = fallback.data
       }
@@ -76,22 +70,19 @@ export const AuthProvider = ({ children }) => {
   }
 
   const signup = async ({ email, password, fullName, phone }) => {
-    if (!isSupabaseConfigured) {
-      throw new Error('Supabase is not configured. Please add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to .env')
+    if (!isAppwriteConfigured) {
+      throw new Error('Appwrite is not configured. Please add VITE_APPWRITE_ENDPOINT and VITE_APPWRITE_PROJECT_ID to .env')
     }
 
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email: email.trim(),
-        password,
-        options: { data: { full_name: fullName.trim(), phone: phone || '' } },
-      })
+      const newAccount = await appwriteAccount.create(ID.unique(), email.trim(), password, fullName.trim())
+      await appwriteAccount.createEmailPasswordSession(email.trim(), password)
+      const currentUser = await appwriteAccount.get()
+      setUser(currentUser)
 
-      if (error) return { data: null, error }
-
-      if (data.user) {
+      if (isSupabaseConfigured) {
         const profileData = {
-          appwrite_user_id: data.user.id,
+          appwrite_user_id: currentUser.$id,
           full_name: fullName.trim(),
           email: email.trim(),
           phone: phone || '',
@@ -101,37 +92,37 @@ export const AuthProvider = ({ children }) => {
         setProfile(profileError ? null : profileData)
       }
 
-      setUser(data.user)
-      return { data: data.user, error: null }
+      return { data: newAccount, error: null }
     } catch (error) {
       return { data: null, error }
     }
   }
 
   const login = async (email, password) => {
-    if (!isSupabaseConfigured) {
-      throw new Error('Supabase is not configured. Please add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to .env')
+    if (!isAppwriteConfigured) {
+      throw new Error('Appwrite is not configured. Please add VITE_APPWRITE_ENDPOINT and VITE_APPWRITE_PROJECT_ID to .env')
     }
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
-      if (error) return { data: null, error }
-      await setSessionUser(data.user)
-      return { data: data.user, error: null }
+      await appwriteAccount.createEmailPasswordSession(email.trim(), password)
+      const currentUser = await appwriteAccount.get()
+      setUser(currentUser)
+      await loadProfile(currentUser.$id)
+      return { data: currentUser, error: null }
     } catch (error) {
       return { data: null, error }
     }
   }
 
   const logout = async () => {
-    if (!isSupabaseConfigured) {
+    if (!isAppwriteConfigured) {
       setUser(null)
       setProfile(null)
       return
     }
 
     try {
-      await supabase.auth.signOut()
+      await appwriteAccount.deleteSession('current')
     } catch (error) {
       console.error('Error logging out of Appwrite:', error.message)
     } finally {
@@ -141,30 +132,75 @@ export const AuthProvider = ({ children }) => {
   }
 
   const resetPasswordForEmail = async (email) => {
-    if (!isSupabaseConfigured) {
-      throw new Error('Supabase is not configured. Please add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to .env')
+    if (!isAppwriteConfigured) {
+      throw new Error('Appwrite is not configured. Please add VITE_APPWRITE_ENDPOINT and VITE_APPWRITE_PROJECT_ID to .env')
     }
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-        redirectTo: `${window.location.origin}/reset-password`,
-      })
-      return { error }
+      await appwriteAccount.createRecovery(email.trim(), `${window.location.origin}/reset-password`)
+      return { error: null }
     } catch (error) {
       return { error }
     }
   }
 
-  const resetPassword = async (_userId, _secret, newPassword) => {
-    if (!isSupabaseConfigured) {
-      throw new Error('Supabase is not configured. Please add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to .env')
+  const resetPassword = async (userId, secret, newPassword) => {
+    if (!isAppwriteConfigured) {
+      throw new Error('Appwrite is not configured. Please add VITE_APPWRITE_ENDPOINT and VITE_APPWRITE_PROJECT_ID to .env')
     }
 
     try {
-      const { error } = await supabase.auth.updateUser({ password: newPassword })
-      return { error }
+      await appwriteAccount.updateRecovery(userId, secret, newPassword, newPassword)
+      return { error: null }
     } catch (error) {
       return { error }
+    }
+  }
+
+  const updateAccount = async ({ fullName, email, phone, currentPassword, newPassword }) => {
+    if (!isAppwriteConfigured) {
+      throw new Error('Appwrite is not configured. Please add VITE_APPWRITE_ENDPOINT and VITE_APPWRITE_PROJECT_ID to .env')
+    }
+
+    try {
+      const trimmedName = fullName.trim()
+      const trimmedEmail = email.trim()
+
+      if (trimmedName && trimmedName !== user?.name) {
+        await appwriteAccount.updateName(trimmedName)
+      }
+
+      if (trimmedEmail && trimmedEmail !== user?.email) {
+        if (!currentPassword) throw new Error('Enter your current password to change your email.')
+        await appwriteAccount.updateEmail(trimmedEmail, currentPassword)
+      }
+
+      if (newPassword) {
+        if (!currentPassword) throw new Error('Enter your current password to change your password.')
+        await appwriteAccount.updatePassword(newPassword, currentPassword)
+      }
+
+      const currentUser = await appwriteAccount.get()
+      setUser(currentUser)
+
+      const profileData = {
+        appwrite_user_id: currentUser.$id,
+        full_name: trimmedName || currentUser.name || '',
+        email: currentUser.email,
+        phone: phone.trim(),
+      }
+
+      if (isSupabaseConfigured) {
+        const { error } = await supabase
+          .from('profiles')
+          .upsert([profileData], { onConflict: 'appwrite_user_id' })
+        if (error) throw error
+      }
+
+      setProfile(profileData)
+      return { data: currentUser, error: null }
+    } catch (error) {
+      return { data: null, error }
     }
   }
 
@@ -177,7 +213,8 @@ export const AuthProvider = ({ children }) => {
     logout,
     resetPasswordForEmail,
     resetPassword,
-    isAppwriteConfigured: isSupabaseConfigured,
+    updateAccount,
+    isAppwriteConfigured,
     isSupabaseConfigured,
   }
 

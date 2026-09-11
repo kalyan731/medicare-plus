@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import {
   ShoppingBag,
-  User,
-  LogOut,
+  CircleArrowRight,
+  CircleUserRound,
+  Settings as SettingsIcon,
   Menu,
   X,
   Package,
@@ -19,14 +20,21 @@ export default function Navbar() {
   const { user, profile, logout } = useAuth()
   const { getCartCount } = useCart()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
 
   const cartCount = getCartCount()
+  const username = profile?.full_name || user?.name || user?.email?.split('@')[0] || 'there'
+  const firstName = username.split(' ')[0]
 
   const handleLogout = async () => {
+    const confirmed = window.confirm('Are you sure you want to sign out?')
+    if (!confirmed) return false
+
     await logout()
     navigate('/login')
+    return true
   }
 
   const isActive = (path) => {
@@ -36,7 +44,7 @@ export default function Navbar() {
   const navLinks = [
     { name: 'Home', path: '/', icon: Home },
     { name: 'Medicines', path: '/medicines', icon: Pill },
-    { name: 'My Files', path: '/files', icon: FolderOpen },
+    { name: 'Health Files', path: '/files', icon: FolderOpen },
   ]
 
   return (
@@ -54,7 +62,7 @@ export default function Navbar() {
                 MediCare<span className="text-teal-500">Plus</span>
               </span>
               <span className="block text-[10px] text-gray-400 -mt-1 font-medium tracking-wider uppercase">
-                Trusted Pharmacy
+                Care for every day
               </span>
             </div>
           </Link>
@@ -89,7 +97,7 @@ export default function Navbar() {
                   }`}
               >
                 <Package className="w-4 h-4" />
-                <span>My Orders</span>
+                <span>Your Orders</span>
               </Link>
             )}
           </nav>
@@ -114,25 +122,38 @@ export default function Navbar() {
             {/* User Account / Auth Actions */}
             <div className="hidden sm:flex items-center space-x-2">
               {user ? (
-                <div className="flex items-center space-x-3 bg-gray-50 border border-gray-200/80 rounded-xl px-3 py-1.5">
-                  <div className="w-8 h-8 rounded-lg bg-pharmacy-100 text-pharmacy-700 flex items-center justify-center font-bold text-sm">
-                    {(profile?.full_name || user.email || 'U')[0].toUpperCase()}
-                  </div>
+                <div className="relative flex items-center space-x-3 bg-gray-50 border border-gray-200/80 rounded-xl px-3 py-1.5">
+                  <button
+                    onClick={() => setAccountMenuOpen(!accountMenuOpen)}
+                    className="w-8 h-8 rounded-full bg-pharmacy-100 text-pharmacy-700 flex items-center justify-center font-bold text-sm hover:bg-pharmacy-200 transition-colors"
+                    title="Open account menu"
+                  >
+                    {username[0].toUpperCase()}
+                  </button>
                   <div className="text-left">
                     <p className="text-xs font-semibold text-gray-800 leading-tight truncate max-w-[120px]">
-                      {profile?.full_name || user.email?.split('@')[0]}
-                    </p>
-                    <p className="text-[10px] text-gray-500 truncate max-w-[120px]">
-                      {user.email}
+                      Hi, {firstName}
                     </p>
                   </div>
-                  <button
-                    onClick={handleLogout}
-                    className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors ml-1"
-                    title="Logout"
-                  >
-                    <LogOut className="w-4 h-4" />
-                  </button>
+                  {accountMenuOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-48 rounded-xl border border-gray-200 bg-white p-1.5 shadow-lg">
+                      <Link
+                        to="/settings"
+                        onClick={() => setAccountMenuOpen(false)}
+                        className="flex items-center space-x-2 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-pharmacy-50 hover:text-pharmacy-700"
+                      >
+                        <SettingsIcon className="w-4 h-4" />
+                        <span>Settings</span>
+                      </Link>
+                      <button
+                        onClick={() => handleLogout().then((didLogout) => { if (didLogout) setAccountMenuOpen(false) })}
+                        className="w-full flex items-center space-x-2 rounded-lg px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50"
+                      >
+                        <CircleArrowRight className="w-4 h-4" />
+                        <span>Sign out</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="flex items-center space-x-2">
@@ -144,8 +165,9 @@ export default function Navbar() {
                   </Link>
                   <Link
                     to="/signup"
-                    className="px-4 py-2 text-sm font-medium text-white bg-pharmacy-600 hover:bg-pharmacy-700 rounded-lg shadow-sm shadow-pharmacy-600/30 transition-all hover:shadow-md"
+                    className="flex items-center space-x-1.5 px-4 py-2 text-sm font-medium text-white bg-pharmacy-600 hover:bg-pharmacy-700 rounded-lg shadow-sm shadow-pharmacy-600/30 transition-all hover:shadow-md"
                   >
+                    <CircleUserRound className="w-4 h-4" />
                     Sign Up
                   </Link>
                 </div>
@@ -189,7 +211,7 @@ export default function Navbar() {
             className="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-base font-medium text-gray-700 hover:bg-pharmacy-50 hover:text-pharmacy-600"
           >
             <FolderOpen className="w-5 h-5 text-gray-400" />
-            <span>My Files</span>
+            <span>Health Files</span>
           </Link>
 
           {user && (
@@ -199,7 +221,7 @@ export default function Navbar() {
               className="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-base font-medium text-gray-700 hover:bg-pharmacy-50 hover:text-pharmacy-600"
             >
               <Package className="w-5 h-5 text-gray-400" />
-              <span>My Orders</span>
+              <span>Your Orders</span>
             </Link>
           )}
 
@@ -208,18 +230,26 @@ export default function Navbar() {
               <div className="space-y-3">
                 <div className="px-3 py-2 bg-gray-50 rounded-lg">
                   <p className="text-sm font-semibold text-gray-800">
-                    {profile?.full_name || 'Signed in user'}
+                    Hi, {firstName}
                   </p>
-                  <p className="text-xs text-gray-500 truncate">{user.email}</p>
                 </div>
+                <Link
+                  to="/settings"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center space-x-2 px-3 py-2.5 text-sm font-medium text-gray-700 bg-gray-50 hover:bg-pharmacy-50 hover:text-pharmacy-700 rounded-lg"
+                >
+                  <SettingsIcon className="w-4 h-4" />
+                  <span>Settings</span>
+                </Link>
                 <button
                   onClick={() => {
-                    handleLogout()
-                    setMobileMenuOpen(false)
+                    handleLogout().then((didLogout) => {
+                      if (didLogout) setMobileMenuOpen(false)
+                    })
                   }}
                   className="w-full flex items-center justify-center space-x-2 px-4 py-2.5 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
                 >
-                  <LogOut className="w-4 h-4" />
+                  <CircleArrowRight className="w-4 h-4" />
                   <span>Log Out</span>
                 </button>
               </div>
@@ -235,8 +265,9 @@ export default function Navbar() {
                 <Link
                   to="/signup"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-center px-4 py-2.5 text-sm font-medium text-white bg-pharmacy-600 hover:bg-pharmacy-700 rounded-lg"
+                  className="flex items-center justify-center space-x-1.5 px-4 py-2.5 text-sm font-medium text-white bg-pharmacy-600 hover:bg-pharmacy-700 rounded-lg"
                 >
+                  <CircleUserRound className="w-4 h-4" />
                   Sign Up
                 </Link>
               </div>

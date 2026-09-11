@@ -12,6 +12,15 @@ export default function Home() {
 
   useEffect(() => {
     loadFeaturedMedicines()
+
+    if (!isSupabaseConfigured || !supabase) return undefined
+
+    const channel = supabase
+      .channel('home-medicines')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'medicines' }, loadFeaturedMedicines)
+      .subscribe()
+
+    return () => supabase.removeChannel(channel)
   }, [])
 
   const loadFeaturedMedicines = async () => {

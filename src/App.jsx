@@ -6,6 +6,7 @@ import { CartProvider } from './context/CartContext'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ProtectedRoute from './components/ProtectedRoute'
+import ScrollToTop from './components/ScrollToTop'
 
 // Pages
 import Home from './pages/Home'
@@ -20,10 +21,12 @@ import Checkout from './pages/Checkout'
 import Orders from './pages/Orders'
 import OrderDetails from './pages/OrderDetails'
 import FileManager from './pages/FileManager'
+import Settings from './pages/Settings'
 
 export default function App() {
   return (
     <Router>
+      <ScrollToTop />
       <AuthProvider>
         <CartProvider>
           <div className="flex flex-col min-h-screen bg-white">
@@ -39,6 +42,14 @@ export default function App() {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/files" element={<FileManager />} />
+                <Route
+                  path="/settings"
+                  element={
+                    <ProtectedRoute>
+                      <Settings />
+                    </ProtectedRoute>
+                  }
+                />
 
                 {/* Protected Pages */}
                 <Route
