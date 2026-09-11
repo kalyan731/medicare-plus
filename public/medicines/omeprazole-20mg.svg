@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Omeprazole 20mg pack">
+  <rect width="800" height="600" fill="#f4fbff"/>
+  <rect x="70" y="45" width="660" height="510" rx="18" fill="#b9e9f7" stroke="#3aa8c7" stroke-width="4"/>
+  <rect x="100" y="92" width="600" height="420" rx="14" fill="#fffefe" opacity="0.92"/>
+  <text x="400" y="155" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#1c7ba0" font-weight="700">OMEPRAZOLE</text>
+  <text x="400" y="220" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="58" fill="#1c7ba0" font-weight="900">20mg</text>
+  <text x="400" y="270" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#325b70" font-weight="700">Gastro-resistant capsules • Acid control</text>
+  <line x1="170" y1="300" x2="630" y2="300" stroke="#d0eff9" stroke-width="3"/>
+  <text x="400" y="345" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#294f64" font-weight="700">GERD, ulcers, reflux &amp; heartburn protection</text>
+  <text x="400" y="388" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#294f64" font-weight="600">1 capsule once daily before breakfast</text>
+  <g>
+    <rect x="170" y="430" width="460" height="48" rx="24" fill="#54bfd9"/>
+    <text x="400" y="462" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#ffffff" font-weight="800">STRIP OF 15 CAPSULES</text>
+  </g>
+  <text x="220" y="545" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#1a749a" font-weight="700">ZYDUS CADILA</text>
+  <text x="580" y="545" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#1a749a" font-weight="700">₹72</text>
+</svg>

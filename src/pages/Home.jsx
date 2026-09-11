@@ -94,7 +94,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-white/10 backdrop-blur-md rounded-3xl transform rotate-6"></div>
                 <div className="absolute inset-0 bg-white/10 backdrop-blur-md rounded-3xl transform -rotate-6"></div>
                 <img
-                  src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=800&auto=format&fit=crop&q=80"
+                  src="/medicines/paracetamol-500.jpg"
                   alt="Pharmacy medicines"
                   className="relative rounded-3xl shadow-2xl object-cover w-full h-full"
                 />

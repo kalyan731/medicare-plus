@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Cough syrup bottle pack">
+  <rect width="800" height="600" fill="#f5f4ff"/>
+  <rect x="70" y="45" width="660" height="510" rx="18" fill="#c7b8ff" stroke="#6853d5" stroke-width="4"/>
+  <rect x="100" y="92" width="600" height="420" rx="14" fill="#fffefe" opacity="0.9"/>
+  <text x="400" y="150" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#5740bb" font-weight="700">COUGH SYRUP</text>
+  <text x="400" y="220" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="50" fill="#5740bb" font-weight="900">BENADRYL DR</text>
+  <text x="400" y="272" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#4d3c8e" font-weight="700">Dextromethorphan 10mg / 5ml</text>
+  <line x1="165" y1="300" x2="635" y2="300" stroke="#d8ceff" stroke-width="3"/>
+  <text x="400" y="345" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#3d2f6f" font-weight="700">Dry cough relief • Soothes sore throat</text>
+  <text x="400" y="390" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#3d2f6f" font-weight="600">5-10ml up to 3 times a day</text>
+  <g>
+    <rect x="175" y="430" width="450" height="48" rx="24" fill="#8d75ea"/>
+    <text x="400" y="462" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#ffffff" font-weight="800">100ml PET BOTTLE</text>
+  </g>
+  <text x="220" y="545" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#5240a8" font-weight="700">JOHNSON &amp; JOHNSON</text>
+  <text x="580" y="545" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#5240a8" font-weight="700">₹120</text>
+</svg>

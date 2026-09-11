@@ -241,7 +241,7 @@ INSERT INTO public.medicines (name, generic_name, description, price, mrp, disco
     '10ml - 15ml taken after meals or at onset of acidity',
     'Pfizer India Ltd.',
     'Hyperacidity, heartburn, acid indigestion, gas bloating, sour stomach, and GERD symptoms.',
-    'https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=800&auto=format&fit=crop&q=80'
+    'images/antacid.jpg'
 ),
 (
     'Multivitamin & Minerals Capsules',

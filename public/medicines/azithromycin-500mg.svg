@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Azithromycin 500mg pack">
+  <rect width="800" height="600" fill="#eefaf6"/>
+  <rect x="70" y="50" width="660" height="500" rx="18" fill="#dffaf0" stroke="#3aa979" stroke-width="4"/>
+  <rect x="100" y="90" width="600" height="420" rx="14" fill="#ffffff" opacity="0.9"/>
+  <text x="400" y="160" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#1d8b67" font-weight="700">AZITHROMYCIN</text>
+  <text x="400" y="220" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="62" fill="#1d8b67" font-weight="900">500mg</text>
+  <text x="400" y="270" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#2e6f5a" font-weight="700">Broad Spectrum Antibiotic</text>
+  <line x1="170" y1="300" x2="630" y2="300" stroke="#bfe5d7" stroke-width="3"/>
+  <text x="400" y="345" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#2d4f45" font-weight="700">For respiratory, throat &amp; bacterial infections</text>
+  <text x="400" y="390" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#2d4f45" font-weight="600">1 tablet once daily for 3-5 days</text>
+  <g>
+    <rect x="170" y="430" width="460" height="48" rx="24" fill="#40b37a"/>
+    <text x="400" y="462" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#ffffff" font-weight="800">STRIP OF 3/5 TABLETS</text>
+  </g>
+  <text x="220" y="545" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#1d8b67" font-weight="700">SUN PHARMA</text>
+  <text x="580" y="545" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#1d8b67" font-weight="700">₹160</text>
+</svg>

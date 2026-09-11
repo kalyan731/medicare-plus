@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Multivitamin and minerals capsules pack">
+  <rect width="800" height="600" fill="#fffaf0"/>
+  <rect x="70" y="45" width="660" height="510" rx="18" fill="#ffd79b" stroke="#d98d1d" stroke-width="4"/>
+  <rect x="100" y="92" width="600" height="420" rx="14" fill="#fffdf9" opacity="0.92"/>
+  <text x="400" y="150" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#9d6200" font-weight="700">MULTIVITAMIN</text>
+  <text x="400" y="220" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="54" fill="#9d6200" font-weight="900">MINERALS</text>
+  <text x="400" y="270" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#6c4709" font-weight="700">B-Complex • D3 • Ginseng • Antioxidants</text>
+  <line x1="165" y1="300" x2="635" y2="300" stroke="#f9d891" stroke-width="3"/>
+  <text x="400" y="345" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#5f3d0b" font-weight="700">Daily energy, immunity &amp; vitality support</text>
+  <text x="400" y="390" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#5f3d0b" font-weight="600">1 capsule daily after breakfast</text>
+  <g>
+    <rect x="175" y="430" width="450" height="48" rx="24" fill="#f0a500"/>
+    <text x="400" y="462" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#fffefb" font-weight="800">BOTTLE OF 30 CAPSULES</text>
+  </g>
+  <text x="220" y="545" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#8c5d00" font-weight="700">RANBAXY</text>
+  <text x="580" y="545" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#8c5d00" font-weight="700">₹260</text>
+</svg>

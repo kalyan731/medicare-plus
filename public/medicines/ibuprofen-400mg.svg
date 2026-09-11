@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Ibuprofen 400mg pack">
+  <rect width="800" height="600" fill="#f9f6f1"/>
+  <rect x="70" y="48" width="660" height="504" rx="18" fill="#ffe9b8" stroke="#cc9c20" stroke-width="4"/>
+  <rect x="100" y="90" width="600" height="420" rx="14" fill="#fffdf8" opacity="0.9"/>
+  <text x="400" y="160" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#ad6b00" font-weight="700">IBUPROFEN</text>
+  <text x="400" y="220" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="64" fill="#ad6b00" font-weight="900">400mg</text>
+  <text x="400" y="270" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#7f5d18" font-weight="700">NSAID • Pain Relief • Anti-Inflammatory</text>
+  <line x1="170" y1="300" x2="630" y2="300" stroke="#efcc78" stroke-width="3"/>
+  <text x="400" y="345" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#664500" font-weight="700">Joint pain, sprains, muscle aches &amp; inflammation</text>
+  <text x="400" y="387" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#664500" font-weight="600">1 tablet with food or milk</text>
+  <g>
+    <rect x="170" y="430" width="460" height="48" rx="24" fill="#d99a00"/>
+    <text x="400" y="462" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#fffefb" font-weight="800">STRIP OF 10 TABLETS</text>
+  </g>
+  <text x="220" y="545" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#7f5d18" font-weight="700">PIRAMAL</text>
+  <text x="580" y="545" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#7f5d18" font-weight="700">₹60</text>
+</svg>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Vitamin C + Zinc chewable pack">
+  <rect width="800" height="600" fill="#fff9ef"/>
+  <rect x="70" y="45" width="660" height="510" rx="18" fill="#ffb84d" stroke="#d98708" stroke-width="4"/>
+  <rect x="100" y="92" width="600" height="420" rx="14" fill="#fffefa" opacity="0.9"/>
+  <text x="400" y="150" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#a85d00" font-weight="700">VITAMIN C + ZINC</text>
+  <text x="400" y="215" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="58" fill="#a85d00" font-weight="900">CHEWABLE</text>
+  <text x="400" y="265" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#6c4300" font-weight="700">500mg + 5mg</text>
+  <line x1="165" y1="295" x2="635" y2="295" stroke="#ffd88a" stroke-width="3"/>
+  <text x="400" y="340" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#5b3d00" font-weight="700">Immunity Booster • Antioxidant Support</text>
+  <text x="400" y="385" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#5b3d00" font-weight="600">1 chewable tablet daily after meals</text>
+  <g>
+    <rect x="175" y="430" width="450" height="48" rx="24" fill="#ff9f1c"/>
+    <text x="400" y="462" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#fffefb" font-weight="800">BOTTLE OF 60 CHEWABLES</text>
+  </g>
+  <text x="220" y="545" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#8d5900" font-weight="700">ABBOTT</text>
+  <text x="580" y="545" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#8d5900" font-weight="700">₹110</text>
+</svg>
