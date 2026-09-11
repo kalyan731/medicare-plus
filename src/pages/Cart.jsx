@@ -13,13 +13,19 @@ import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 
 export default function Cart() {
-  const { cart, removeFromCart, increaseQuantity, decreaseQuantity, clearCart, getCartTotal } = useCart()
+  const { cart, removeFromCart, increaseQuantity, decreaseQuantity, clearCart, getCartTotal, toggleWishlist } = useCart()
   const { user } = useAuth()
   const navigate = useNavigate()
 
   const subtotal = getCartTotal()
   const deliveryFee = subtotal > 0 ? (subtotal >= 500 ? 0 : 40) : 0
   const grandTotal = subtotal + deliveryFee
+
+  const handleRemoveItem = (item) => {
+    const saveToWishlist = window.confirm(`Save ${item.name} to your wishlist before removing it?`)
+    if (saveToWishlist) toggleWishlist(item)
+    removeFromCart(item.id)
+  }
 
   if (cart.length === 0) {
     return (
@@ -123,7 +129,7 @@ export default function Cart() {
                     ₹{(Number.parseFloat(item.price) * item.quantity).toFixed(2)}
                   </span>
                   <button
-                    onClick={() => removeFromCart(item.id)}
+                    onClick={() => handleRemoveItem(item)}
                     className="text-gray-400 hover:text-red-600 p-1 rounded-lg transition-colors"
                     title="Remove item"
                   >

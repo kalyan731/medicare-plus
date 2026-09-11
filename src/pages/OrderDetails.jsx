@@ -44,27 +44,12 @@ export default function OrderDetails() {
     setError('')
 
     try {
-      const userId = user.$id || user.id
-
-      // 1. Load order details - try appwrite_user_id first
-      let { data: orderData, error: orderError } = await supabase
+      const { data: orderData, error: orderError } = await supabase
         .from('orders')
         .select('*')
         .eq('id', id)
-        .eq('appwrite_user_id', userId)
+        .eq('user_id', user.id)
         .single()
-
-      // Fallback to user_id if appwrite_user_id column doesn't exist
-      if (orderError && orderError.code === '42703') {
-        const fallback = await supabase
-          .from('orders')
-          .select('*')
-          .eq('id', id)
-          .eq('user_id', userId)
-          .single()
-        orderData = fallback.data
-        orderError = fallback.error
-      }
 
       if (orderError) throw orderError
       setOrder(orderData)

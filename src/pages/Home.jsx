@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ShoppingBag, ArrowRight, Sparkles, Shield, Truck } from 'lucide-react'
+import { ShoppingBag, ArrowRight, Sparkles, Shield, Truck, Moon, Sun } from 'lucide-react'
 import { supabase, isSupabaseConfigured } from '../lib/supabase'
 import { SAMPLE_MEDICINES, enrichMedicines } from '../lib/demoData'
 import MedicineCard from '../components/MedicineCard'
 import Loading from '../components/Loading'
+import { useTheme } from '../context/ThemeContext'
 
 export default function Home() {
   const [featuredMedicines, setFeaturedMedicines] = useState([])
   const [loading, setLoading] = useState(true)
+  const { darkMode, toggleTheme } = useTheme()
 
   useEffect(() => {
     loadFeaturedMedicines()
@@ -94,6 +96,14 @@ export default function Home() {
                   <ShoppingBag className="w-5 h-5" />
                   <span>View Cart</span>
                 </Link>
+                <button
+                  onClick={toggleTheme}
+                  className="inline-flex items-center justify-center space-x-2 px-6 py-4 bg-black/10 border-2 border-white/30 text-white font-semibold rounded-xl hover:bg-white/20 transition-all"
+                  title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+                >
+                  {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                  <span>{darkMode ? 'Light mode' : 'Dark mode'}</span>
+                </button>
               </div>
             </div>
 

@@ -1,222 +1,169 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { ID } from 'appwrite'
-import { appwriteAccount, isAppwriteConfigured } from '../lib/appwrite'
 import { supabase, isSupabaseConfigured } from '../lib/supabase'
 
 const AuthContext = createContext({})
 
 export const useAuth = () => {
-  const context = useContext(AuthContext)
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
-  return context
+    const context = useContext(AuthContext)
+    if (!context) throw new Error('useAuth must be used within an AuthProvider')
+    return context
 }
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [profile, setProfile] = useState(null)
+    const [user, setUser] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [profile, setProfile] = useState(null)
 
-  useEffect(() => {
-    if (!isAppwriteConfigured) {
-      setLoading(false)
-      return
-    }
-
-    checkSession()
-  }, [])
-
-  const checkSession = async () => {
-    try {
-      const currentUser = await appwriteAccount.get()
-      setUser(currentUser)
-      await loadProfile(currentUser.$id)
-    } catch {
-      setUser(null)
-      setProfile(null)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const loadProfile = async (userId) => {
-    if (!isSupabaseConfigured || !userId) return
-
-    try {
-      // Try querying by appwrite_user_id first
-      let { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('appwrite_user_id', userId)
-        .maybeSingle()
-
-      // Fallback check by id if appwrite_user_id column is not yet migrated
-      if (!data && error?.code === '42703') {
-        const fallback = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', userId)
-          .maybeSingle()
-        data = fallback.data
-      }
-
-      if (data) {
-        setProfile(data)
-      }
-    } catch (error) {
-      console.error('Error loading profile from Supabase:', error.message)
-    }
-  }
-
-  const signup = async ({ email, password, fullName, phone }) => {
-    if (!isAppwriteConfigured) {
-      throw new Error('Appwrite is not configured. Please add VITE_APPWRITE_ENDPOINT and VITE_APPWRITE_PROJECT_ID to .env')
-    }
-
-    try {
-      const newAccount = await appwriteAccount.create(ID.unique(), email.trim(), password, fullName.trim())
-      await appwriteAccount.createEmailPasswordSession(email.trim(), password)
-      const currentUser = await appwriteAccount.get()
-      setUser(currentUser)
-
-      if (isSupabaseConfigured) {
-        const profileData = {
-          appwrite_user_id: currentUser.$id,
-          full_name: fullName.trim(),
-          email: email.trim(),
-          phone: phone || '',
+    useEffect(() => {
+        if (!isSupabaseConfigured) {
+            setLoading(false)
+            return undefined
         }
-        const { error: profileError } = await supabase.from('profiles').upsert([profileData], { onConflict: 'appwrite_user_id' })
-        if (profileError) console.warn('Could not save profile in Supabase:', profileError.message)
-        setProfile(profileError ? null : profileData)
-      }
 
-      return { data: newAccount, error: null }
-    } catch (error) {
-      return { data: null, error }
-    }
-  }
+        const loadSession = async () => {
+            const { data: { session } } = await supabase.auth.getSession()
+            await setSessionUser(session?.user || null)
+            setLoading(false)
+        }
 
-  const login = async (email, password) => {
-    if (!isAppwriteConfigured) {
-      throw new Error('Appwrite is not configured. Please add VITE_APPWRITE_ENDPOINT and VITE_APPWRITE_PROJECT_ID to .env')
-    }
+        loadSession()
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setSessionUser(session?.user || null)
+        })
+        return () => subscription.unsubscribe()
+    }, [])
 
-    try {
-      await appwriteAccount.createEmailPasswordSession(email.trim(), password)
-      const currentUser = await appwriteAccount.get()
-      setUser(currentUser)
-      await loadProfile(currentUser.$id)
-      return { data: currentUser, error: null }
-    } catch (error) {
-      return { data: null, error }
-    }
-  }
-
-  const logout = async () => {
-    if (!isAppwriteConfigured) {
-      setUser(null)
-      setProfile(null)
-      return
+    const setSessionUser = async (currentUser) => {
+        setUser(currentUser)
+        if (!currentUser) {
+            setProfile(null)
+            return
+        }
+        await loadProfile(currentUser)
     }
 
-    try {
-      await appwriteAccount.deleteSession('current')
-    } catch (error) {
-      console.error('Error logging out of Appwrite:', error.message)
-    } finally {
-      setUser(null)
-      setProfile(null)
-    }
-  }
+    const loadProfile = async (currentUser) => {
+        const profileData = {
+            id: currentUser.id,
+            full_name: currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || '',
+            email: currentUser.email || '',
+            phone: currentUser.user_metadata?.phone || '',
+        }
 
-  const resetPasswordForEmail = async (email) => {
-    if (!isAppwriteConfigured) {
-      throw new Error('Appwrite is not configured. Please add VITE_APPWRITE_ENDPOINT and VITE_APPWRITE_PROJECT_ID to .env')
-    }
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', currentUser.id)
+            .maybeSingle()
 
-    try {
-      await appwriteAccount.createRecovery(email.trim(), `${window.location.origin}/reset-password`)
-      return { error: null }
-    } catch (error) {
-      return { error }
-    }
-  }
+        if (data) {
+            setProfile(data)
+            return data
+        }
 
-  const resetPassword = async (userId, secret, newPassword) => {
-    if (!isAppwriteConfigured) {
-      throw new Error('Appwrite is not configured. Please add VITE_APPWRITE_ENDPOINT and VITE_APPWRITE_PROJECT_ID to .env')
-    }
+        if (error && error.code !== 'PGRST116') {
+            console.error('Error loading profile from Supabase:', error.message)
+            return null
+        }
 
-    try {
-      await appwriteAccount.updateRecovery(userId, secret, newPassword, newPassword)
-      return { error: null }
-    } catch (error) {
-      return { error }
-    }
-  }
+        const { data: createdProfile, error: createError } = await supabase
+            .from('profiles')
+            .insert([profileData])
+            .select()
+            .single()
 
-  const updateAccount = async ({ fullName, email, phone, currentPassword, newPassword }) => {
-    if (!isAppwriteConfigured) {
-      throw new Error('Appwrite is not configured. Please add VITE_APPWRITE_ENDPOINT and VITE_APPWRITE_PROJECT_ID to .env')
+        if (createError) {
+            console.error('Error creating Supabase profile:', createError.message)
+            return null
+        }
+
+        setProfile(createdProfile)
+        return createdProfile
     }
 
-    try {
-      const trimmedName = fullName.trim()
-      const trimmedEmail = email.trim()
+    const signup = async ({ email, password, fullName, phone }) => {
+        if (!isSupabaseConfigured) throw new Error('Supabase is not configured.')
 
-      if (trimmedName && trimmedName !== user?.name) {
-        await appwriteAccount.updateName(trimmedName)
-      }
+        const { data, error } = await supabase.auth.signUp({
+            email: email.trim(),
+            password,
+            options: { data: { full_name: fullName.trim(), phone: phone || '' } },
+        })
 
-      if (trimmedEmail && trimmedEmail !== user?.email) {
-        if (!currentPassword) throw new Error('Enter your current password to change your email.')
-        await appwriteAccount.updateEmail(trimmedEmail, currentPassword)
-      }
-
-      if (newPassword) {
-        if (!currentPassword) throw new Error('Enter your current password to change your password.')
-        await appwriteAccount.updatePassword(newPassword, currentPassword)
-      }
-
-      const currentUser = await appwriteAccount.get()
-      setUser(currentUser)
-
-      const profileData = {
-        appwrite_user_id: currentUser.$id,
-        full_name: trimmedName || currentUser.name || '',
-        email: currentUser.email,
-        phone: phone.trim(),
-      }
-
-      if (isSupabaseConfigured) {
-        const { error } = await supabase
-          .from('profiles')
-          .upsert([profileData], { onConflict: 'appwrite_user_id' })
-        if (error) throw error
-      }
-
-      setProfile(profileData)
-      return { data: currentUser, error: null }
-    } catch (error) {
-      return { data: null, error }
+        if (error || !data.user) return { data: null, error }
+        await loadProfile(data.user)
+        return { data: data.user, error: null }
     }
-  }
 
-  const value = {
-    user,
-    profile,
-    loading,
-    signup,
-    login,
-    logout,
-    resetPasswordForEmail,
-    resetPassword,
-    updateAccount,
-    isAppwriteConfigured,
-    isSupabaseConfigured,
-  }
+    const login = async (email, password) => {
+        if (!isSupabaseConfigured) throw new Error('Supabase is not configured.')
+        const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
+        if (error) return { data: null, error }
+        await setSessionUser(data.user)
+        return { data: data.user, error: null }
+    }
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+    const logout = async () => {
+        if (isSupabaseConfigured) await supabase.auth.signOut()
+        setUser(null)
+        setProfile(null)
+    }
+
+    const resetPasswordForEmail = async (email) => {
+        if (!isSupabaseConfigured) throw new Error('Supabase is not configured.')
+        const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+            redirectTo: `${window.location.origin}/reset-password`,
+        })
+        return { error }
+    }
+
+    const resetPassword = async (_userId, _secret, newPassword) => {
+        if (!isSupabaseConfigured) throw new Error('Supabase is not configured.')
+        const { error } = await supabase.auth.updateUser({ password: newPassword })
+        return { error }
+    }
+
+    const updateAccount = async ({ fullName, email, phone, currentPassword, newPassword }) => {
+        if (!isSupabaseConfigured) throw new Error('Supabase is not configured.')
+
+        if (email.trim() !== user?.email && !currentPassword) {
+            return { data: null, error: new Error('Enter your current password to change your email.') }
+        }
+
+        const updates = { data: { full_name: fullName.trim(), phone: phone.trim() } }
+        if (email.trim() !== user?.email) updates.email = email.trim()
+        if (newPassword) updates.password = newPassword
+
+        const { data: authData, error: authError } = await supabase.auth.updateUser(updates)
+        if (authError) return { data: null, error: authError }
+
+        const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .upsert([{ id: user.id, full_name: fullName.trim(), email: email.trim(), phone: phone.trim() }])
+            .select()
+            .single()
+        if (profileError) return { data: null, error: profileError }
+
+        setUser(authData.user)
+        setProfile(profileData)
+        return { data: authData.user, error: null }
+    }
+
+    return (
+        <AuthContext.Provider value={{
+            user,
+            profile,
+            loading,
+            signup,
+            login,
+            logout,
+            resetPasswordForEmail,
+            resetPassword,
+            updateAccount,
+            isAppwriteConfigured: isSupabaseConfigured,
+            isSupabaseConfigured,
+        }}>
+            {children}
+        </AuthContext.Provider>
+    )
 }

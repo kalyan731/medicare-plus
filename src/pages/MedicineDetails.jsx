@@ -10,7 +10,8 @@ import {
   Sparkles,
   ChevronRight,
   ArrowLeft,
-  Package
+  Package,
+  Heart
 } from 'lucide-react'
 import { supabase, isSupabaseConfigured } from '../lib/supabase'
 import { SAMPLE_MEDICINES, enrichMedicine } from '../lib/demoData'
@@ -19,7 +20,7 @@ import Loading from '../components/Loading'
 
 export default function MedicineDetails() {
   const { id } = useParams()
-  const { addToCart } = useCart()
+  const { addToCart, toggleWishlist, isWishlisted } = useCart()
 
   const [medicine, setMedicine] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -256,12 +257,24 @@ export default function MedicineDetails() {
                     onClick={handleAddToCart}
                     disabled={medicine.stock === 0}
                     className={`flex-1 flex items-center justify-center space-x-2 py-4 px-6 rounded-xl font-semibold shadow-md transition-all ${medicine.stock === 0
-                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                        : 'bg-pharmacy-600 text-white hover:bg-pharmacy-700 hover:shadow-lg hover:shadow-pharmacy-600/30 active:scale-98'
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      : 'bg-pharmacy-600 text-white hover:bg-pharmacy-700 hover:shadow-lg hover:shadow-pharmacy-600/30 active:scale-98'
                       }`}
                   >
                     <ShoppingCart className="w-5 h-5" />
                     <span>{medicine.stock === 0 ? 'Out of Stock' : 'Add to Cart'}</span>
+                  </button>
+
+                  <button
+                    onClick={() => toggleWishlist(medicine)}
+                    className={`w-full sm:w-auto flex items-center justify-center space-x-2 py-4 px-5 rounded-xl font-semibold border-2 transition-colors ${isWishlisted(medicine.id)
+                      ? 'border-red-500 bg-red-50 text-red-600'
+                      : 'border-gray-300 text-gray-600 hover:border-red-400 hover:text-red-500'
+                      }`}
+                    title={isWishlisted(medicine.id) ? 'Remove from wishlist' : 'Add to wishlist'}
+                  >
+                    <Heart className="w-5 h-5" fill={isWishlisted(medicine.id) ? 'currentColor' : 'none'} />
+                    <span>{isWishlisted(medicine.id) ? 'Saved' : 'Wishlist'}</span>
                   </button>
 
                   <Link
@@ -314,8 +327,8 @@ export default function MedicineDetails() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`py-4 px-6 text-sm font-semibold whitespace-nowrap transition-colors border-b-2 ${activeTab === tab.id
-                    ? 'border-pharmacy-600 text-pharmacy-700 bg-pharmacy-50/40'
-                    : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  ? 'border-pharmacy-600 text-pharmacy-700 bg-pharmacy-50/40'
+                  : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                   }`}
               >
                 {tab.label}

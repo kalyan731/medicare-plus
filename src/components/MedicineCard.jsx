@@ -1,10 +1,10 @@
-import { ShoppingCart, Eye, Package } from 'lucide-react'
+import { ShoppingCart, Eye, Package, Heart } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 
 export default function MedicineCard({ medicine }) {
-  const { addToCart } = useCart()
+  const { addToCart, toggleWishlist, isWishlisted } = useCart()
   const [imgError, setImgError] = useState(false)
 
   useEffect(() => {
@@ -16,7 +16,13 @@ export default function MedicineCard({ medicine }) {
     addToCart(medicine, 1)
   }
 
-  const defaultImg = "/medicines/paracetamol-500.jpg"
+  const handleWishlist = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    toggleWishlist(medicine)
+  }
+
+  const defaultImg = "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&auto=format&fit=crop&q=80"
 
   return (
     <Link
@@ -26,6 +32,19 @@ export default function MedicineCard({ medicine }) {
       <div>
         {/* Image */}
         <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100">
+          <button
+            type="button"
+            onClick={handleWishlist}
+            className={`absolute top-3 left-3 z-10 w-9 h-9 rounded-full flex items-center justify-center shadow-md transition-colors ${
+              isWishlisted(medicine.id)
+                ? 'bg-red-500 text-white'
+                : 'bg-white/90 text-gray-500 hover:text-red-500'
+            }`}
+            title={isWishlisted(medicine.id) ? 'Remove from wishlist' : 'Add to wishlist'}
+            aria-label={isWishlisted(medicine.id) ? 'Remove from wishlist' : 'Add to wishlist'}
+          >
+            <Heart className="w-4 h-4" fill={isWishlisted(medicine.id) ? 'currentColor' : 'none'} />
+          </button>
           {!imgError ? (
             <img
               src={medicine.image_url || defaultImg}
@@ -119,12 +138,14 @@ export default function MedicineCard({ medicine }) {
           </div>
 
           <button
+            type="button"
             onClick={handleAddToCart}
             disabled={medicine.stock === 0}
-            className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-sm font-medium transition-all shadow-sm ${medicine.stock === 0
-              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-              : 'bg-pharmacy-600 text-white hover:bg-pharmacy-700 hover:shadow-md hover:shadow-pharmacy-600/30 active:scale-95'
-              }`}
+            className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-sm font-medium transition-all shadow-sm ${
+              medicine.stock === 0
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : 'bg-pharmacy-600 text-white hover:bg-pharmacy-700 hover:shadow-md hover:shadow-pharmacy-600/30 active:scale-95'
+            }`}
             title={medicine.stock === 0 ? 'Out of stock' : 'Add to cart'}
           >
             <ShoppingCart className="w-4 h-4" />

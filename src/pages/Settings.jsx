@@ -7,7 +7,7 @@ export default function Settings() {
     const { user, profile, updateAccount } = useAuth()
     const navigate = useNavigate()
     const [formData, setFormData] = useState({
-        fullName: profile?.full_name || user?.name || '',
+        fullName: profile?.full_name || user?.user_metadata?.full_name || '',
         email: user?.email || '',
         phone: profile?.phone || '',
         currentPassword: '',

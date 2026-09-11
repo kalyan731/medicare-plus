@@ -11,22 +11,29 @@ import {
   Pill,
   Home,
   HeartPulse,
-  FolderOpen
+  FolderOpen,
+  Stethoscope,
+  Heart,
+  Moon,
+  Sun
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
+import { useTheme } from '../context/ThemeContext'
 
 export default function Navbar() {
   const { user, profile, logout } = useAuth()
-  const { getCartCount } = useCart()
+  const { getCartCount, wishlist } = useCart()
+  const { darkMode, toggleTheme } = useTheme()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [accountMenuOpen, setAccountMenuOpen] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
 
   const cartCount = getCartCount()
-  const username = profile?.full_name || user?.name || user?.email?.split('@')[0] || 'there'
+  const username = profile?.full_name || user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'there'
   const firstName = username.split(' ')[0]
+
 
   const handleLogout = async () => {
     const confirmed = window.confirm('Are you sure you want to sign out?')
@@ -45,6 +52,7 @@ export default function Navbar() {
     { name: 'Home', path: '/', icon: Home },
     { name: 'Medicines', path: '/medicines', icon: Pill },
     { name: 'Health Files', path: '/files', icon: FolderOpen },
+    { name: 'Health Guide', path: '/symptom-guide', icon: Stethoscope },
   ]
 
   return (
@@ -104,6 +112,30 @@ export default function Navbar() {
 
           {/* Right Action Icons */}
           <div className="flex items-center space-x-2 sm:space-x-4">
+
+            {/* Cart Button */}
+            <button
+              onClick={toggleTheme}
+              className="p-2.5 rounded-xl text-gray-700 hover:text-pharmacy-600 hover:bg-pharmacy-50 transition-colors"
+              title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+              aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {darkMode ? <Sun className="w-5 h-5 sm:w-6 sm:h-6" /> : <Moon className="w-5 h-5 sm:w-6 sm:h-6" />}
+            </button>
+
+            {/* Wishlist Button */}
+            <Link
+              to="/wishlist"
+              className="relative p-2.5 rounded-xl text-gray-700 hover:text-red-500 hover:bg-red-50 transition-colors"
+              title="View wishlist"
+            >
+              <Heart className="w-5 h-5 sm:w-6 sm:h-6" />
+              {wishlist.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md">
+                  {wishlist.length > 99 ? '99+' : wishlist.length}
+                </span>
+              )}
+            </Link>
 
             {/* Cart Button */}
             <Link
@@ -213,6 +245,29 @@ export default function Navbar() {
             <FolderOpen className="w-5 h-5 text-gray-400" />
             <span>Health Files</span>
           </Link>
+          <Link
+            to="/symptom-guide"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-base font-medium text-gray-700 hover:bg-pharmacy-50 hover:text-pharmacy-600"
+          >
+            <Stethoscope className="w-5 h-5 text-gray-400" />
+            <span>Health Guide</span>
+          </Link>
+          <Link
+            to="/wishlist"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-base font-medium text-gray-700 hover:bg-red-50 hover:text-red-500"
+          >
+            <Heart className="w-5 h-5 text-red-400" fill="currentColor" />
+            <span>Wishlist{wishlist.length > 0 ? ` (${wishlist.length})` : ''}</span>
+          </Link>
+          <button
+            onClick={toggleTheme}
+            className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-base font-medium text-gray-700 hover:bg-gray-100"
+          >
+            {darkMode ? <Sun className="w-5 h-5 text-gray-400" /> : <Moon className="w-5 h-5 text-gray-400" />}
+            <span>{darkMode ? 'Light mode' : 'Dark mode'}</span>
+          </button>
 
           {user && (
             <Link

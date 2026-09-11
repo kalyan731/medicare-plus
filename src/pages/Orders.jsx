@@ -25,25 +25,11 @@ export default function Orders() {
     setError('')
 
     try {
-      const userId = user.$id || user.id
-
-      // Try appwrite_user_id first
       let { data, error } = await supabase
         .from('orders')
         .select('*')
-        .eq('appwrite_user_id', userId)
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false })
-
-      // Fallback to user_id if appwrite_user_id column doesn't exist
-      if (error && error.code === '42703') {
-        const fallback = await supabase
-          .from('orders')
-          .select('*')
-          .eq('user_id', userId)
-          .order('created_at', { ascending: false })
-        data = fallback.data
-        error = fallback.error
-      }
 
       if (error) throw error
       setOrders(data || [])

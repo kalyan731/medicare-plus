@@ -6,10 +6,9 @@
 -- 1. Enable UUID Extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- 2. Create PROFILES Table (linked with Appwrite User ID)
+-- 2. Create PROFILES Table (linked with Supabase Auth user ID)
 CREATE TABLE IF NOT EXISTS public.profiles (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    appwrite_user_id TEXT UNIQUE NOT NULL,
+    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     full_name TEXT,
     email TEXT,
     phone TEXT,
@@ -35,10 +34,10 @@ CREATE TABLE IF NOT EXISTS public.medicines (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 4. Create ORDERS Table (linked with Appwrite User ID)
+-- 4. Create ORDERS Table (linked with Supabase Auth user ID)
 CREATE TABLE IF NOT EXISTS public.orders (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    appwrite_user_id TEXT NOT NULL,
+    user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
     delivery_name TEXT NOT NULL,
     delivery_phone TEXT NOT NULL,
     delivery_address TEXT NOT NULL,
@@ -49,6 +48,10 @@ CREATE TABLE IF NOT EXISTS public.orders (
     status TEXT DEFAULT 'Placed' NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- Migration for projects created before Supabase Auth ownership was enabled.
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE;
+NOTIFY pgrst, 'reload schema';
 
 -- 5. Create ORDER_ITEMS Table
 CREATE TABLE IF NOT EXISTS public.order_items (
@@ -78,29 +81,36 @@ CREATE POLICY "Medicines are viewable by everyone"
 ON public.medicines FOR SELECT
 USING (true);
 
--- PROFILES Policies (Public read/insert/update for Appwrite-authenticated client)
+-- PROFILES Policies (each user can access only their own profile)
 DROP POLICY IF EXISTS "Public profiles read" ON public.profiles;
-CREATE POLICY "Public profiles read" ON public.profiles FOR SELECT USING (true);
-
 DROP POLICY IF EXISTS "Public profiles insert" ON public.profiles;
-CREATE POLICY "Public profiles insert" ON public.profiles FOR INSERT WITH CHECK (true);
-
 DROP POLICY IF EXISTS "Public profiles update" ON public.profiles;
-CREATE POLICY "Public profiles update" ON public.profiles FOR UPDATE USING (true);
+DROP POLICY IF EXISTS "Users can read their own profile" ON public.profiles;
+CREATE POLICY "Users can read their own profile" ON public.profiles FOR SELECT USING (id = auth.uid());
+DROP POLICY IF EXISTS "Users can create their own profile" ON public.profiles;
+CREATE POLICY "Users can create their own profile" ON public.profiles FOR INSERT WITH CHECK (id = auth.uid());
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
+CREATE POLICY "Users can update their own profile" ON public.profiles FOR UPDATE USING (id = auth.uid()) WITH CHECK (id = auth.uid());
 
--- ORDERS Policies
+-- ORDERS Policies (each user can access only their own orders)
 DROP POLICY IF EXISTS "Public orders read" ON public.orders;
-CREATE POLICY "Public orders read" ON public.orders FOR SELECT USING (true);
-
 DROP POLICY IF EXISTS "Public orders insert" ON public.orders;
-CREATE POLICY "Public orders insert" ON public.orders FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Users can read their own orders" ON public.orders;
+CREATE POLICY "Users can read their own orders" ON public.orders FOR SELECT USING (user_id = auth.uid());
+DROP POLICY IF EXISTS "Users can create their own orders" ON public.orders;
+CREATE POLICY "Users can create their own orders" ON public.orders FOR INSERT WITH CHECK (user_id = auth.uid());
 
--- ORDER_ITEMS Policies
+-- ORDER_ITEMS Policies (only items belonging to the user's orders)
 DROP POLICY IF EXISTS "Public order_items read" ON public.order_items;
-CREATE POLICY "Public order_items read" ON public.order_items FOR SELECT USING (true);
-
 DROP POLICY IF EXISTS "Public order_items insert" ON public.order_items;
-CREATE POLICY "Public order_items insert" ON public.order_items FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Users can read their order items" ON public.order_items;
+CREATE POLICY "Users can read their order items" ON public.order_items FOR SELECT USING (
+    EXISTS (SELECT 1 FROM public.orders WHERE orders.id = order_items.order_id AND orders.user_id = auth.uid())
+);
+DROP POLICY IF EXISTS "Users can create their order items" ON public.order_items;
+CREATE POLICY "Users can create their order items" ON public.order_items FOR INSERT WITH CHECK (
+    EXISTS (SELECT 1 FROM public.orders WHERE orders.id = order_items.order_id AND orders.user_id = auth.uid())
+);
 
 -- ===================================================
 -- 7. REFRESH MEDICINES SEED DATA (High-Resolution Verified Packaging)
@@ -121,7 +131,7 @@ INSERT INTO public.medicines (name, generic_name, description, price, mrp, disco
     '1 tablet every 4-6 hours after meals (Max 4g/day)',
     'Cipla Health Ltd.',
     'Relief of mild-to-moderate fever, headache, migraine, muscle ache, backache, arthritis pain, and cold-associated fever.',
-    'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&auto=format&fit=crop&q=80'
+    'https://share.google/wAf5KSIo4ZCwfuktQ'
 ),
 (
     'Dolo 650 Tablet',
@@ -136,7 +146,7 @@ INSERT INTO public.medicines (name, generic_name, description, price, mrp, disco
     '1 tablet 3 times a day as prescribed by physician',
     'Micro Labs Ltd.',
     'Management of acute fever, viral pyrexia, musculoskeletal pains, and headache.',
-    'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=800&auto=format&fit=crop&q=80'
+    'https://share.google/oIgyCYgaLrVJZ86y6'
 ),
 (
     'Cetirizine 10mg',
@@ -151,7 +161,7 @@ INSERT INTO public.medicines (name, generic_name, description, price, mrp, disco
     '1 tablet once daily at bedtime with water',
     'Dr. Reddy''s Laboratories',
     'Allergic rhinitis, seasonal allergies, hay fever, urticaria (hives), allergic conjunctivitis.',
-    'https://images.unsplash.com/photo-1585435557343-3b092031a831?w=800&auto=format&fit=crop&q=80'
+    'https://share.google/EWU8fxEZS5XeIQhIj'
 ),
 (
     'Azithromycin 500mg',
@@ -166,7 +176,7 @@ INSERT INTO public.medicines (name, generic_name, description, price, mrp, disco
     '1 tablet daily 1 hour before or 2 hours after food for 3 to 5 days',
     'Sun Pharmaceutical Industries',
     'Treatment of bacterial respiratory tract infections, pharyngitis, skin infections, and community-acquired pneumonia.',
-    'https://images.unsplash.com/photo-1584362917165-526a968579e8?w=800&auto=format&fit=crop&q=80'
+    'https://share.google/00sIoE6A9XqDX1AUj'
 ),
 (
     'Vitamin C + Zinc Chewable',
@@ -181,7 +191,7 @@ INSERT INTO public.medicines (name, generic_name, description, price, mrp, disco
     '1 chewable tablet daily after lunch or breakfast',
     'Abbott Healthcare',
     'Nutritional support, immune system enhancement, wound healing, and cellular protection.',
-    'https://images.unsplash.com/photo-1576602976047-174e57a47881?w=800&auto=format&fit=crop&q=80'
+    'https://share.google/O0mqbq8zlmYPMK5JE'
 ),
 (
     'ORS Electrolyte Sachet (21.8g)',
@@ -196,7 +206,7 @@ INSERT INTO public.medicines (name, generic_name, description, price, mrp, disco
     'Dissolve entire contents of sachet in 1 Litre of clean drinking water',
     'FDC Limited',
     'Rapid rehydration in acute diarrhea, vomiting, heat stroke, and intensive physical exertion.',
-    'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=800&auto=format&fit=crop&q=80'
+    'https://share.google/IOwkkZqEpNcefQuQB'
 ),
 (
     'Ibuprofen 400mg',
@@ -211,7 +221,7 @@ INSERT INTO public.medicines (name, generic_name, description, price, mrp, disco
     '1 tablet with food or a glass of milk to prevent gastric irritation',
     'Piramal Healthcare',
     'Inflammatory joint conditions, osteoarthritis, muscular pain, post-operative dental pain, headache.',
-    'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=800&auto=format&fit=crop&q=80'
+    'https://th.bing.com/th/id/OIP.m1XtOMW7fJKWK6dB-htXQwHaGd?w=181&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3'
 ),
 (
     'Cough Syrup (Benadryl DR)',
@@ -226,7 +236,7 @@ INSERT INTO public.medicines (name, generic_name, description, price, mrp, disco
     '5-10ml up to 3 times a day as required',
     'Johnson & Johnson',
     'Non-productive dry cough relief caused by throat tickle, allergens, and common cold.',
-    'https://images.unsplash.com/photo-1563178406-4cdc2923acbc?w=800&auto=format&fit=crop&q=80'
+    'https://th.bing.com/th/id/OIP.j3TsBGqbY2kugjb3DCeCmgHaHa?w=174&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3'
 ),
 (
     'Antacid Liquid Gel 200ml',
@@ -241,7 +251,7 @@ INSERT INTO public.medicines (name, generic_name, description, price, mrp, disco
     '10ml - 15ml taken after meals or at onset of acidity',
     'Pfizer India Ltd.',
     'Hyperacidity, heartburn, acid indigestion, gas bloating, sour stomach, and GERD symptoms.',
-    'images/antacid.jpg'
+    'https://share.google/wAf5KSIo4ZCwfuktQ'
 ),
 (
     'Multivitamin & Minerals Capsules',
@@ -256,7 +266,7 @@ INSERT INTO public.medicines (name, generic_name, description, price, mrp, disco
     '1 softgel daily with water after breakfast',
     'Ranbaxy Laboratories',
     'Daily nutritional support, physical endurance, mental alertness, immunity defense, and bone strength.',
-    'https://images.unsplash.com/photo-1559599101-f09722fb4948?w=800&auto=format&fit=crop&q=80'
+    'https://share.google/oIgyCYgaLrVJZ86y6'
 ),
 (
     'Omeprazole 20mg',
@@ -271,7 +281,7 @@ INSERT INTO public.medicines (name, generic_name, description, price, mrp, disco
     '1 capsule once daily in the morning at least 30 minutes before breakfast',
     'Zydus Cadila Healthcare',
     'Gastroesophageal reflux disease (GERD), heartburn prevention, gastric and duodenal ulcers.',
-    'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=800&auto=format&fit=crop&q=80'
+    'https://share.google/EWU8fxEZS5XeIQhIj'
 ),
 (
     'Bandage & Antiseptic Ointment Kit',
@@ -286,5 +296,5 @@ INSERT INTO public.medicines (name, generic_name, description, price, mrp, disco
     'Clean the affected area thoroughly and apply ointment before dressing',
     'Dettol Health Solutions',
     'First aid antiseptic management of minor cuts, abrasions, burns, and superficial skin wounds.',
-    'https://images.unsplash.com/photo-1603398938378-e54eab446dde?w=800&auto=format&fit=crop&q=80'
+    'https://share.google/00sIoE6A9XqDX1AUj'
 );
